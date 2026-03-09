@@ -2,9 +2,9 @@ package turnhere.controllers;
 
 import turnhere.dto.AttractionRequest;
 import turnhere.models.Attraction;
-import com.turnhere.models.City;
-import com.turnhere.repository.AttractionRepository;
-import com.turnhere.repository.CityRepository;
+import turnhere.models.City;
+import turnhere.repository.AttractionRepository;
+import turnhere.repository.CityRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
