@@ -1,0 +1,175 @@
+/*This file adds: 
+Defines font/light scheme
+Hover color change to button
+Bounce movement to car.png
+shake to "HERE"
+
+*/
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.bounce {
+  animation: bounce 1s infinite;
+}
+.bounce-hover:hover {
+  display: inline-block;
+  animation: bounce 1s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake-hover:hover {
+  display: inline-block;
+  animation: shake 0.5s infinite;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f0f8ff;
+}
+
+.city-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal centering */
+  justify-content: center; /* vertical centering if parent allows */
+  text-align: center;
+  padding: 40px;
+}
+
+.city-list h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.city-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.city-list li {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.city-list li:hover {
+  color: #007BFF;
+}
+/*  Responsive Media Breakpoints */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.4em;
+  }
+
+  .city-list {
+    padding: 20px;
+  }
+
+  .city-list h2 {
+    font-size: 1.5rem;
+  }
+
+  .city-list li {
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+
+  button {
+    font-size: 0.9em;
+    padding: 0.5em 1em;
+  }
+
+  .shake-hover:hover,
+  .bounce-hover:hover {
+    animation-duration: 0.8s;
+  }
+}
+
