@@ -1,6 +1,7 @@
 package com.turnhere.repository;
 
 
+
 import com.turnhere.models.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 
