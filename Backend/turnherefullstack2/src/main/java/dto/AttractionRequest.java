@@ -1,6 +1,5 @@
 package com.turnhere.dto;
 
-
 public class AttractionRequest {
 
     private String name;
