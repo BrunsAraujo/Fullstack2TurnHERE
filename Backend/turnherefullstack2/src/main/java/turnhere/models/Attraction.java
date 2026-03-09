@@ -1,4 +1,4 @@
-package com.turnhere.models;
+package turnhere.models;
 
 import jakarta.persistence.*;
 

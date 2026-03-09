@@ -1,7 +1,7 @@
-package com.turnhere.controllers;
+package turnhere.controllers;
 
-import com.turnhere.dto.AttractionRequest;
-import com.turnhere.models.Attraction;
+import turnhere.dto.AttractionRequest;
+import turnhere.models.Attraction;
 import com.turnhere.models.City;
 import com.turnhere.repository.AttractionRepository;
 import com.turnhere.repository.CityRepository;

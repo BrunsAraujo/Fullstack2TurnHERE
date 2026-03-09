@@ -1,4 +1,4 @@
-package com.turnhere.dto;
+package turnhere.dto;
 
 public class AttractionRequest {
 
