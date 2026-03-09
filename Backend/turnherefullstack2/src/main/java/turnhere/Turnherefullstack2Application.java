@@ -1,4 +1,4 @@
-package com.example.turnherefullstack2;
+package turnhere;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
