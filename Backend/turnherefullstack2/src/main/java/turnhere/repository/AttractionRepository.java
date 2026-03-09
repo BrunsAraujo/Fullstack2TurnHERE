@@ -1,5 +1,6 @@
 package turnhere.repository;
 
+
 import turnhere.models.Attraction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
