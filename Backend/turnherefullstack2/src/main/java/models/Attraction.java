@@ -1,6 +1,5 @@
 package com.turnhere.models;
 
-
 import jakarta.persistence.*;
 
 @Entity
