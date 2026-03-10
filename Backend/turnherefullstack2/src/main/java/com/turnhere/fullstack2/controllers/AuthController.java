@@ -1,4 +1,5 @@
 //Add Admin registration
+//fix admin login
 
 package com.turnhere.fullstack2.controllers;
 
@@ -10,6 +11,7 @@ import com.turnhere.fullstack2.models.UserRole;
 import com.turnhere.fullstack2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -21,6 +23,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
@@ -34,7 +39,7 @@ public class AuthController {
 
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setEnabled(true);
         user.setRole(UserRole.USER);
@@ -60,7 +65,7 @@ public class AuthController {
 
         User admin = new User();
         admin.setUsername(request.getUsername());
-        admin.setPassword(request.getPassword());
+        admin.setPassword(passwordEncoder.encode(request.getPassword()));
         admin.setEmail(request.getEmail());
         admin.setEnabled(true);
         admin.setRole(UserRole.ADMIN);
@@ -79,7 +84,7 @@ public class AuthController {
 
         User user = userOptional.get();
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
 
