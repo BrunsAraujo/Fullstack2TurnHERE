@@ -3,6 +3,7 @@ package com.turnhere.fullstack2.models;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "attraction")  // Changed from "attractions" to "attraction"
 public class Attraction {
 
     @Id
