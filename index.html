@@ -1,0 +1,29 @@
+<!-- This file updates the page favicon, the page name, makes the page responsive to movile devices, ensuring it is scaled
+ properly, handles the mount area of the react app-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- viewport will make the webpage responsive on mobile devices and ensures
+ the layout scaled properly accross screen sizes by setting the viewport to the 
+ device's width -->
+    <link rel="icon" type="image/png" href="/turn-here-icon.png" />
+    <meta name="description" content="Plan your perfect day trip with Turn-HERE! — explore cities, save trips, and share feedback." />
+    <meta name="theme-color" content="#f0f8ff" />
+<!-- sets the address bar color on mobile devices to match the
+ site color's theme -->
+    <link rel="icon" type="image/png" href="/src/assets/car.png" />
+<!-- specifies the small icon favicon - shown in the browser tab to be the
+ turn-here! icon -->
+    <title>Turn-HERE!</title>
+  </head>
+  <body>
+
+<!-- Below the div starts the mounting point for 
+ the react app. Here we import main.jsx and all the
+ other react components are imported to App5.jsx -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
