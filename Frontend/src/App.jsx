@@ -11,6 +11,7 @@ import LoginForm from "./components/LoginForm";
 import TripSaver from "./components/TripSaver";
 import Footer from "./components/Footer.jsx";
 import CityRandomizer from "./components/CityRandomizer";
+import AdminDashboard from "./components/AdminDashboard";
 import "./App.css";
 import "./index.css";
 
@@ -24,18 +25,34 @@ function App() {
 
   return (
     <Router>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#f0f8ff" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          backgroundColor: "#f0f8ff",
+        }}
+      >
         <header>
-        <Header />
+          <Header />
         </header>
 
         <nav>
-        <CollapsibleMenu />
+          <CollapsibleMenu />
         </nav>
         <main style={{ flex: 1 }}>
           <Routes>
-          <Route path="/about" element={<About />} />
-
+            <Route path="/about" element={<About />} />
+            <Route
+              path="/"
+              element={
+                <div style={{ textAlign: "center", padding: "40px" }}>
+                  <h1>Welcome to Turn-HERE!</h1>
+                  <p>Click "Open Menu" above to get started!</p>
+                </div>
+              }
+            />
+            <Route path="/about" element={<About />} />
             <Route
               path="/login"
               element={
@@ -50,7 +67,6 @@ function App() {
               path="/cities"
               element={
                 <div className="app">
-                  
                   {!selectedCity ? (
                     <CityList onSelectCity={setSelectedCity} />
                   ) : (
@@ -68,14 +84,13 @@ function App() {
             />
             <Route path="/cities/:cityName" element={<CityItinerary />} />
             <Route path="/CityRandomizer" element={<CityRandomizer />} />
-
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
-          </main>
-        </div>
+        </main>
+      </div>
       <footer>
         <Footer />
-        </footer>
-      
+      </footer>
     </Router>
   );
 }

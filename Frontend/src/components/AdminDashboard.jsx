@@ -1,3 +1,4 @@
+//added edit button to cities and attractions to pre-populate the form for easy editing, added cancel button to reset the form and exit edit mode, added confirmation prompts for deletions, improved styling of the dashboard with a cleaner layout and better colors, added success/error messages for user feedback on actions performed.
 import { useState, useEffect } from "react";
 import { cityAPI, attractionAPI } from "../services/api";
 

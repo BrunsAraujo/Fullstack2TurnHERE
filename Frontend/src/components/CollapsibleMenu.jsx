@@ -1,5 +1,6 @@
 //adds link to the menu from react-router-dom for navigation, improves the nomeclature of the lables
 // adds light blue padding border.
+//adds front end links to the menu for navigation, improves the nomeclature of the lables
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -13,7 +14,7 @@ function CollapsibleMenu() {
         backgroundColor: "#f0f8ff", // Light blue background
         padding: "20px",
         borderBottom: "2px solid #ccc",
-        textAlign: "left"
+        textAlign: "left",
       }}
     >
       <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
@@ -23,18 +24,31 @@ function CollapsibleMenu() {
       {isOpen && (
         <nav className="menu">
           <ul style={{ listStyle: "none", padding: 0 }}>
-            <li><Link to="/">HOME PAGE</Link></li>
-            <li><Link to="/about">ABOUT</Link></li>
-            <li><Link to="/search">SEARCH FOR A CITY</Link></li>
-            <li><Link to="/CityRandomizer">RANDOM CITY SELECTOR</Link></li>
-            <li><Link to="/cities">CITIES AVAILABLE</Link></li>
-            <li><Link to="/login">USER AREA</Link></li>
+            <li>
+              <Link to="/">HOME PAGE</Link>
+            </li>
+            <li>
+              <Link to="/about">ABOUT</Link>
+            </li>
+            <li>
+              <Link to="/search">SEARCH FOR A CITY</Link>
+            </li>
+            <li>
+              <Link to="/CityRandomizer">RANDOM CITY SELECTOR</Link>
+            </li>
+            <li>
+              <Link to="/cities">CITIES AVAILABLE</Link>
+            </li>
+            <li>
+              <Link to="/login">USER AREA</Link>
+            </li>
+            <li>
+              <Link to="/admin">ADMIN DASHBOARD</Link>
+            </li>
           </ul>
         </nav>
       )}
-    
     </div>
-    
   );
 }
 
