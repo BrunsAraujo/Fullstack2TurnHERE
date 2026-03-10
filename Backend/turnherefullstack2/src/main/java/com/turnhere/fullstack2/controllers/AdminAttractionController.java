@@ -32,7 +32,7 @@ public class AdminAttractionController {
 
         Attraction attraction = new Attraction();
         attraction.setName(request.getName());
-        attraction.setType(Attraction.Type.valueOf(request.getType()));  // Convert to enum
+        attraction.setType(Attraction.Type.valueOf(request.getType()));
         attraction.setDescription(request.getDescription());
         attraction.setAddress(request.getAddress());
         attraction.setCity(city);
@@ -44,6 +44,26 @@ public class AdminAttractionController {
     @GetMapping
     public ResponseEntity<List<Attraction>> getAll() {
         return ResponseEntity.ok(attractionRepository.findAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Attraction> updateAttraction(@PathVariable Long id,
+                                                       @RequestBody AttractionRequest request) {
+
+        Attraction attraction = attractionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Attraction not found"));
+
+        City city = cityRepository.findById(request.getCityId())
+                .orElseThrow(() -> new RuntimeException("City not found"));
+
+        attraction.setName(request.getName());
+        attraction.setType(Attraction.Type.valueOf(request.getType()));
+        attraction.setDescription(request.getDescription());
+        attraction.setAddress(request.getAddress());
+        attraction.setCity(city);
+
+        Attraction updated = attractionRepository.save(attraction);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
