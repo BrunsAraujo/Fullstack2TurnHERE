@@ -8,11 +8,10 @@
         <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>testTurnHere1</artifactId>
+    <artifactId>turnherefullstack2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>testTurnHere1</name>
-    <description>Demo project for Spring Boot</description>
+    <name>turnherefullstack2</name>
+    <description>LaunchCode Capstone Project 2</description>
     <url/>
     <licenses>
         <license/>
@@ -68,6 +67,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
