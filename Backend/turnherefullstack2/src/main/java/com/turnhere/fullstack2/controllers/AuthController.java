@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -69,11 +71,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername());
+        Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
 
-        if (user == null) {
+        if (userOptional.isEmpty()) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
+
+        User user = userOptional.get();
 
         if (!user.getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
