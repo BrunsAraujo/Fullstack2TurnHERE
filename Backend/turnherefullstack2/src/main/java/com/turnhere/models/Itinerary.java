@@ -1,6 +1,5 @@
 package com.turnhere.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class Itinerary {
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
-    private com.turnhere.models.City city;
+    private City city;
 
     @ManyToMany
     @JoinTable(
@@ -41,7 +40,7 @@ public class Itinerary {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Itinerary(String name, String description, Integer duration, com.turnhere.models.City city) {
+    public Itinerary(String name, String description, Integer duration, City city) {
         this.name = name;
         this.description = description;
         this.duration = duration;
@@ -82,11 +81,11 @@ public class Itinerary {
         this.duration = duration;
     }
 
-    public com.turnhere.models.City getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(com.turnhere.models.City city) {
+    public void setCity(City city) {
         this.city = city;
     }
 

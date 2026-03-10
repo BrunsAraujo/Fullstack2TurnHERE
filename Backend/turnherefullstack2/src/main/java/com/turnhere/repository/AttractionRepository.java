@@ -1,8 +1,8 @@
-package turnhere.repository;
+package com.turnhere.repository;
 
 
 
-import turnhere.models.Attraction;
+import com.turnhere.models.Attraction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,4 @@
-package turnhere.models;
-
-
+package com.turnhere.models;
 
 import jakarta.persistence.*;
 
@@ -26,8 +24,8 @@ public class Attraction {
     private City city;
 
     public enum Type {
-        ANTIQUE_SHOP,        // ← ADD THIS
-        BREWERY,             // ← ADD THIS
+        ANTIQUE_SHOP,
+        BREWERY,
         WINERY,
         MUSEUM,
         PARK,
