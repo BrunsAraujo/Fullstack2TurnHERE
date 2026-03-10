@@ -8,12 +8,14 @@ function AdminDashboard() {
   const [cityName, setCityName] = useState("");
   const [cityState, setCityState] = useState("");
   const [cityCountry, setCityCountry] = useState("USA");
+  const [editingCityId, setEditingCityId] = useState(null);
 
   const [attractionName, setAttractionName] = useState("");
   const [attractionType, setAttractionType] = useState("WINERY");
   const [attractionDescription, setAttractionDescription] = useState("");
   const [attractionAddress, setAttractionAddress] = useState("");
   const [selectedCityId, setSelectedCityId] = useState("");
+  const [editingAttractionId, setEditingAttractionId] = useState(null);
 
   const [message, setMessage] = useState("");
 
@@ -32,37 +34,81 @@ function AdminDashboard() {
     }
   };
 
-  const handleAddCity = async (e) => {
+  const handleAddOrUpdateCity = async (e) => {
     e.preventDefault();
     try {
-      await cityAPI.create({
-        name: cityName,
-        state: cityState,
-        country: cityCountry,
-      });
-      setMessage("City added successfully!");
+      if (editingCityId) {
+        await cityAPI.update(editingCityId, {
+          name: cityName,
+          state: cityState,
+          country: cityCountry,
+        });
+        setMessage("City updated successfully!");
+        setEditingCityId(null);
+      } else {
+        await cityAPI.create({
+          name: cityName,
+          state: cityState,
+          country: cityCountry,
+        });
+        setMessage("City added successfully!");
+      }
+
       setCityName("");
       setCityState("");
       setCityCountry("USA");
       fetchData();
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      setMessage("Error adding city: " + err.message);
+      if (err.response && err.response.data) {
+        setMessage("Error: " + err.response.data);
+      } else {
+        setMessage("Error: " + err.message);
+      }
+      setTimeout(() => setMessage(""), 5000);
       console.error(err);
     }
   };
 
-  const handleAddAttraction = async (e) => {
+  const handleEditCity = (city) => {
+    setCityName(city.name);
+    setCityState(city.state);
+    setCityCountry(city.country);
+    setEditingCityId(city.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEditCity = () => {
+    setCityName("");
+    setCityState("");
+    setCityCountry("USA");
+    setEditingCityId(null);
+  };
+
+  const handleAddOrUpdateAttraction = async (e) => {
     e.preventDefault();
     try {
-      await attractionAPI.create({
-        name: attractionName,
-        type: attractionType,
-        description: attractionDescription,
-        address: attractionAddress,
-        cityId: parseInt(selectedCityId),
-      });
-      setMessage("Attraction added successfully!");
+      if (editingAttractionId) {
+        await attractionAPI.update(editingAttractionId, {
+          name: attractionName,
+          type: attractionType,
+          description: attractionDescription,
+          address: attractionAddress,
+          cityId: parseInt(selectedCityId),
+        });
+        setMessage("Attraction updated successfully!");
+        setEditingAttractionId(null);
+      } else {
+        await attractionAPI.create({
+          name: attractionName,
+          type: attractionType,
+          description: attractionDescription,
+          address: attractionAddress,
+          cityId: parseInt(selectedCityId),
+        });
+        setMessage("Attraction added successfully!");
+      }
+
       setAttractionName("");
       setAttractionType("WINERY");
       setAttractionDescription("");
@@ -71,13 +117,37 @@ function AdminDashboard() {
       fetchData();
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      setMessage("Error adding attraction: " + err.message);
+      setMessage("Error: " + err.message);
+      setTimeout(() => setMessage(""), 5000);
       console.error(err);
     }
   };
 
+  const handleEditAttraction = (attraction) => {
+    setAttractionName(attraction.name);
+    setAttractionType(attraction.type);
+    setAttractionDescription(attraction.description);
+    setAttractionAddress(attraction.address);
+    setSelectedCityId(attraction.city.id.toString());
+    setEditingAttractionId(attraction.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEditAttraction = () => {
+    setAttractionName("");
+    setAttractionType("WINERY");
+    setAttractionDescription("");
+    setAttractionAddress("");
+    setSelectedCityId("");
+    setEditingAttractionId(null);
+  };
+
   const handleDeleteCity = async (id) => {
-    if (window.confirm("Are you sure you want to delete this city?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this city? This will also delete all attractions in this city.",
+      )
+    ) {
       try {
         await cityAPI.delete(id);
         setMessage("City deleted successfully!");
@@ -131,8 +201,8 @@ function AdminDashboard() {
             borderRadius: "8px",
           }}
         >
-          <h2>Add New City</h2>
-          <form onSubmit={handleAddCity}>
+          <h2>{editingCityId ? "Edit City" : "Add New City"}</h2>
+          <form onSubmit={handleAddOrUpdateCity}>
             <div style={{ marginBottom: "15px" }}>
               <label
                 style={{
@@ -205,22 +275,44 @@ function AdminDashboard() {
               />
             </div>
 
-            <button
-              type="submit"
-              style={{
-                width: "100%",
-                padding: "12px",
-                backgroundColor: "#28a745",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                fontSize: "1rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Add City
-            </button>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                type="submit"
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  backgroundColor: editingCityId ? "#007BFF" : "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                {editingCityId ? "Update City" : "Add City"}
+              </button>
+
+              {editingCityId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEditCity}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    backgroundColor: "#6c757d",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </form>
 
           <div style={{ marginTop: "30px" }}>
@@ -242,19 +334,35 @@ function AdminDashboard() {
                   <span>
                     {city.name}, {city.state}
                   </span>
-                  <button
-                    onClick={() => handleDeleteCity(city.id)}
-                    style={{
-                      padding: "5px 15px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
+                  <div>
+                    <button
+                      onClick={() => handleEditCity(city)}
+                      style={{
+                        padding: "5px 15px",
+                        backgroundColor: "#007BFF",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                        marginRight: "5px",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCity(city.id)}
+                      style={{
+                        padding: "5px 15px",
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -268,8 +376,10 @@ function AdminDashboard() {
             borderRadius: "8px",
           }}
         >
-          <h2>Add New Attraction</h2>
-          <form onSubmit={handleAddAttraction}>
+          <h2>
+            {editingAttractionId ? "Edit Attraction" : "Add New Attraction"}
+          </h2>
+          <form onSubmit={handleAddOrUpdateAttraction}>
             <div style={{ marginBottom: "15px" }}>
               <label
                 style={{
@@ -407,22 +517,44 @@ function AdminDashboard() {
               </select>
             </div>
 
-            <button
-              type="submit"
-              style={{
-                width: "100%",
-                padding: "12px",
-                backgroundColor: "#007BFF",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                fontSize: "1rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Add Attraction
-            </button>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                type="submit"
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  backgroundColor: editingAttractionId ? "#007BFF" : "#007BFF",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                {editingAttractionId ? "Update Attraction" : "Add Attraction"}
+              </button>
+
+              {editingAttractionId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEditAttraction}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    backgroundColor: "#6c757d",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </form>
 
           <div style={{ marginTop: "30px" }}>
@@ -455,19 +587,34 @@ function AdminDashboard() {
                       {attraction.city.name}
                     </small>
                   </span>
-                  <button
-                    onClick={() => handleDeleteAttraction(attraction.id)}
-                    style={{
-                      padding: "5px 15px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
+                  <div style={{ display: "flex", gap: "5px" }}>
+                    <button
+                      onClick={() => handleEditAttraction(attraction)}
+                      style={{
+                        padding: "5px 15px",
+                        backgroundColor: "#007BFF",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteAttraction(attraction.id)}
+                      style={{
+                        padding: "5px 15px",
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
