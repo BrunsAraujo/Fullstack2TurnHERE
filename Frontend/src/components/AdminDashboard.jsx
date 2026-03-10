@@ -25,8 +25,11 @@ function AdminDashboard() {
   const [cityMessage, setCityMessage] = useState("");
   const [attractionMessage, setAttractionMessage] = useState("");
 
+  const [confirmDeleteCityId, setConfirmDeleteCityId] = useState(null);
+  const [confirmDeleteAttractionId, setConfirmDeleteAttractionId] =
+    useState(null);
+
   useEffect(() => {
-    // Check if admin is logged in
     const adminData = localStorage.getItem("admin");
     if (!adminData) {
       navigate("/admin-login");
@@ -35,7 +38,6 @@ function AdminDashboard() {
 
     const parsedAdmin = JSON.parse(adminData);
 
-    // Verify admin role
     if (parsedAdmin.role !== "ADMIN") {
       navigate("/admin-login");
       return;
@@ -67,7 +69,6 @@ function AdminDashboard() {
   const handleAddCity = async (e) => {
     e.preventDefault();
     setCityMessage("");
-
     try {
       await cityAPI.create(newCity);
       setCityMessage("City added successfully!");
@@ -91,7 +92,6 @@ function AdminDashboard() {
   const handleUpdateCity = async (e) => {
     e.preventDefault();
     setCityMessage("");
-
     try {
       await cityAPI.update(editingCity.id, editingCity);
       setCityMessage("City updated successfully!");
@@ -108,15 +108,15 @@ function AdminDashboard() {
   };
 
   const handleDeleteCity = async (id) => {
-    if (window.confirm("Are you sure you want to delete this city?")) {
-      try {
-        await cityAPI.delete(id);
-        setCityMessage("City deleted successfully!");
-        fetchData();
-        setTimeout(() => setCityMessage(""), 3000);
-      } catch (error) {
-        setCityMessage("Error deleting city");
-      }
+    try {
+      await cityAPI.delete(id);
+      setCityMessage("City deleted successfully!");
+      setConfirmDeleteCityId(null);
+      fetchData();
+      setTimeout(() => setCityMessage(""), 3000);
+    } catch (error) {
+      setCityMessage("Error deleting city");
+      setConfirmDeleteCityId(null);
     }
   };
 
@@ -129,7 +129,6 @@ function AdminDashboard() {
   const handleAddAttraction = async (e) => {
     e.preventDefault();
     setAttractionMessage("");
-
     try {
       await attractionAPI.create(newAttraction);
       setAttractionMessage("Attraction added successfully!");
@@ -152,17 +151,13 @@ function AdminDashboard() {
   };
 
   const handleEditAttraction = (attraction) => {
-    setEditingAttraction({
-      ...attraction,
-      cityId: attraction.city.id,
-    });
+    setEditingAttraction({ ...attraction, cityId: attraction.city.id });
     setAttractionMessage("");
   };
 
   const handleUpdateAttraction = async (e) => {
     e.preventDefault();
     setAttractionMessage("");
-
     try {
       await attractionAPI.update(editingAttraction.id, {
         name: editingAttraction.name,
@@ -185,15 +180,15 @@ function AdminDashboard() {
   };
 
   const handleDeleteAttraction = async (id) => {
-    if (window.confirm("Are you sure you want to delete this attraction?")) {
-      try {
-        await attractionAPI.delete(id);
-        setAttractionMessage("Attraction deleted successfully!");
-        fetchData();
-        setTimeout(() => setAttractionMessage(""), 3000);
-      } catch (error) {
-        setAttractionMessage("Error deleting attraction");
-      }
+    try {
+      await attractionAPI.delete(id);
+      setAttractionMessage("Attraction deleted successfully!");
+      setConfirmDeleteAttractionId(null);
+      fetchData();
+      setTimeout(() => setAttractionMessage(""), 3000);
+    } catch (error) {
+      setAttractionMessage("Error deleting attraction");
+      setConfirmDeleteAttractionId(null);
     }
   };
 
@@ -375,43 +370,93 @@ function AdminDashboard() {
                 backgroundColor: "white",
                 marginBottom: "10px",
                 borderRadius: "5px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
                 border: "1px solid #ddd",
               }}
             >
-              <div>
-                <strong>{city.name}</strong>, {city.state}, {city.country}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <strong>{city.name}</strong>, {city.state}, {city.country}
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    onClick={() => handleEditCity(city)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#ffc107",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setConfirmDeleteCityId(city.id)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <button
-                  onClick={() => handleEditCity(city)}
+
+              {/* Inline confirmation for city delete */}
+              {confirmDeleteCityId === city.id && (
+                <div
                   style={{
-                    padding: "5px 15px",
-                    backgroundColor: "#ffc107",
-                    color: "#000",
-                    border: "none",
+                    marginTop: "10px",
+                    padding: "10px",
+                    backgroundColor: "#fff3cd",
                     borderRadius: "5px",
-                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
                   }}
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteCity(city.id)}
-                  style={{
-                    padding: "5px 15px",
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
+                  <span style={{ color: "#856404" }}>
+                    Are you sure you want to delete this city?
+                  </span>
+                  <button
+                    onClick={() => handleDeleteCity(city.id)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Yes, Delete
+                  </button>
+                  <button
+                    onClick={() => setConfirmDeleteCityId(null)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -688,7 +733,7 @@ function AdminDashboard() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeleteAttraction(attraction.id)}
+                    onClick={() => setConfirmDeleteAttractionId(attraction.id)}
                     style={{
                       padding: "5px 15px",
                       backgroundColor: "#dc3545",
@@ -703,6 +748,51 @@ function AdminDashboard() {
                   </button>
                 </div>
               </div>
+
+              {/* Inline confirmation for attraction delete */}
+              {confirmDeleteAttractionId === attraction.id && (
+                <div
+                  style={{
+                    marginTop: "10px",
+                    padding: "10px",
+                    backgroundColor: "#fff3cd",
+                    borderRadius: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <span style={{ color: "#856404" }}>
+                    Are you sure you want to delete this attraction?
+                  </span>
+                  <button
+                    onClick={() => handleDeleteAttraction(attraction.id)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Yes, Delete
+                  </button>
+                  <button
+                    onClick={() => setConfirmDeleteAttractionId(null)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
