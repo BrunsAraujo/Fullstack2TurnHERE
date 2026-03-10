@@ -1,3 +1,5 @@
+//updading user entity to add login for admin
+
 package com.turnhere.fullstack2.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,20 +14,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    private boolean enabled = true;  // ADD THIS LINE
+    private Boolean enabled = true;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -35,11 +41,6 @@ public class User {
     @JsonIgnore
     private List<Review> reviews;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
     // Constructors
     public User() {}
 
@@ -47,10 +48,11 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.enabled = true;  // ADD THIS LINE
+        this.enabled = true;
+        this.role = UserRole.USER;
     }
 
-    // Existing getters and setters...
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -83,13 +85,20 @@ public class User {
         this.email = email;
     }
 
-    // ADD THIS GETTER AND SETTER
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public LocalDateTime getCreatedAt() {
