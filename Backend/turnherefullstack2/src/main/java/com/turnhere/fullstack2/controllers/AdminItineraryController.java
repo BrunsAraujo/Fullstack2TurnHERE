@@ -1,12 +1,12 @@
-package com.turnhere.controllers;
+package com.turnhere.fullstack2.controllers;
 
-import com.turnhere.dto.ItineraryRequest;
-import com.turnhere.models.Attraction;
-import com.turnhere.models.City;
-import com.turnhere.models.Itinerary;
-import com.turnhere.repository.AttractionRepository;
-import com.turnhere.repository.CityRepository;
-import com.turnhere.repository.ItineraryRepository;
+import com.turnhere.fullstack2.dto.ItineraryRequest;
+import com.turnhere.fullstack2.models.Attraction;
+import com.turnhere.fullstack2.models.City;
+import com.turnhere.fullstack2.models.Itinerary;
+import com.turnhere.fullstack2.repository.AttractionRepository;
+import com.turnhere.fullstack2.repository.CityRepository;
+import com.turnhere.fullstack2.repository.ItineraryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

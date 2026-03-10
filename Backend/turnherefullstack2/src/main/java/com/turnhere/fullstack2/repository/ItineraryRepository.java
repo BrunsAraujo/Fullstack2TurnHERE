@@ -1,6 +1,6 @@
-package com.turnhere.repository;
+package com.turnhere.fullstack2.repository;
 
-import com.turnhere.models.Itinerary;
+import com.turnhere.fullstack2.models.Itinerary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
