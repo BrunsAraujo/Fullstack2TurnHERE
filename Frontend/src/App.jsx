@@ -1,5 +1,7 @@
 //App7.jsx adds the about page and routes it
 //updated app.jsx to include user authentication state management, and to route to the user dashboard on successful login. Also added a welcome message on the home page, and styled it for better user experience.
+//Added admin routes
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Header from "./components/Header";
@@ -15,6 +17,8 @@ import RegistrationForm from "./components/RegistrationForm";
 import UserDashboard from "./components/UserDashboard";
 import CreateItinerary from "./components/CreateItinerary";
 import ItineraryDetail from "./components/ItineraryDetail";
+import AdminLogin from "./components/AdminLogin";
+import AdminRegistration from "./components/AdminRegistration";
 import AdminDashboard from "./components/AdminDashboard";
 import TripSaver from "./components/TripSaver";
 
@@ -35,7 +39,6 @@ function App() {
 
         <main style={{ flex: 1 }}>
           <Routes>
-            {/* Public Routes */}
             <Route
               path="/"
               element={
@@ -65,14 +68,12 @@ function App() {
             <Route path="/cities/:cityName" element={<CityItinerary />} />
             <Route path="/CityRandomizer" element={<CityRandomizer />} />
 
-            {/* Auth Routes */}
             <Route path="/register" element={<RegistrationForm />} />
             <Route
               path="/login"
               element={<LoginForm onLogin={handleLogin} />}
             />
 
-            {/* User Routes */}
             <Route path="/user-dashboard" element={<UserDashboard />} />
             <Route path="/create-itinerary" element={<CreateItinerary />} />
             <Route path="/itinerary/:id" element={<ItineraryDetail />} />
@@ -81,8 +82,9 @@ function App() {
               element={<TripSaver user={user?.username || "Guest"} />}
             />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-register" element={<AdminRegistration />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </main>
 
