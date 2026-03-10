@@ -1,10 +1,10 @@
-package com.turnhere.controllers;
+package com.turnhere.fullstack2.controllers;
 
-import com.turnhere.dto.AttractionRequest;
-import com.turnhere.models.Attraction;
-import com.turnhere.models.City;
-import com.turnhere.repository.AttractionRepository;
-import com.turnhere.repository.CityRepository;
+import com.turnhere.fullstack2.dto.AttractionRequest;
+import com.turnhere.fullstack2.models.Attraction;
+import com.turnhere.fullstack2.models.City;
+import com.turnhere.fullstack2.repository.AttractionRepository;
+import com.turnhere.fullstack2.repository.CityRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

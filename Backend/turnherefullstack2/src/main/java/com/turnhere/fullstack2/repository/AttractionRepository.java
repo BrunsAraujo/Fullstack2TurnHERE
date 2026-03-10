@@ -1,8 +1,8 @@
-package com.turnhere.repository;
+package com.turnhere.fullstack2.repository;
 
 
 
-import com.turnhere.models.Attraction;
+import com.turnhere.fullstack2.models.Attraction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

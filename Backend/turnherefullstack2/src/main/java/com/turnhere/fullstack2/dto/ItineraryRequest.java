@@ -1,4 +1,4 @@
-package com.turnhere.dto;
+package com.turnhere.fullstack2.dto;
 
 import java.util.List;
 

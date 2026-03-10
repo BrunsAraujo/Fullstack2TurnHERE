@@ -1,4 +1,4 @@
-package com.turnhere.config;
+package com.turnhere.fullstack2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
