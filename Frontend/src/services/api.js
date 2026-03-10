@@ -1,3 +1,4 @@
+//add admin endpoints & import axios from "axios";
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080/api";
@@ -25,6 +26,8 @@ const attractionAPI = {
 // Auth API (User)
 const authAPI = {
   register: (userData) => axios.post(`${API_BASE_URL}/auth/register`, userData),
+  registerAdmin: (adminData) =>
+    axios.post(`${API_BASE_URL}/auth/register-admin`, adminData),
   login: (credentials) => axios.post(`${API_BASE_URL}/auth/login`, credentials),
   getUserById: (id) => axios.get(`${API_BASE_URL}/auth/user/${id}`),
 };

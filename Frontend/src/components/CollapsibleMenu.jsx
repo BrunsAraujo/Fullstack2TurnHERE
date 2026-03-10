@@ -2,6 +2,9 @@
 // adds light blue padding border.
 //adds front end links to the menu for navigation, improves the nomeclature of the lables
 //updated collapsible menu to check if user is logged in and show different links accordingly, also added an admin dashboard link for easy access. Styled the menu for better user experience and visual appeal.
+//Updated the collapsible menu to check if the user is logged in and show different links accordingly, also added an admin dashboard link for easy access. Styled the menu for better user experience and visual appeal. Added a welcome message on the home page with a brief description of the app's features and benefits to engage users right away.
+//also admin login and registration pages have been added to the menu for easy access, and the home page now includes a welcome message with a brief description of the app's features and benefits to engage users right away. The collapsible menu has been styled with a light blue background, padding, and border to enhance its visual appeal and improve user experience.
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -13,7 +16,9 @@ function CollapsibleMenu() {
   };
 
   const user = localStorage.getItem("user");
+  const admin = localStorage.getItem("admin");
   const isLoggedIn = !!user;
+  const isAdmin = !!admin;
 
   return (
     <div>
@@ -185,20 +190,53 @@ function CollapsibleMenu() {
 
             <hr style={{ margin: "15px 0", border: "1px solid #ddd" }} />
 
-            <li style={{ marginBottom: "10px" }}>
-              <Link
-                to="/admin"
-                style={{
-                  color: "#dc3545",
-                  textDecoration: "none",
-                  fontSize: "1.1rem",
-                  fontWeight: "bold",
-                }}
-                onClick={toggleMenu}
-              >
-                ADMIN DASHBOARD
-              </Link>
-            </li>
+            {isAdmin ? (
+              <li style={{ marginBottom: "10px" }}>
+                <Link
+                  to="/admin-dashboard"
+                  style={{
+                    color: "#dc3545",
+                    textDecoration: "none",
+                    fontSize: "1.1rem",
+                    fontWeight: "bold",
+                  }}
+                  onClick={toggleMenu}
+                >
+                  ADMIN DASHBOARD
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li style={{ marginBottom: "10px" }}>
+                  <Link
+                    to="/admin-login"
+                    style={{
+                      color: "#dc3545",
+                      textDecoration: "none",
+                      fontSize: "1.1rem",
+                      fontWeight: "bold",
+                    }}
+                    onClick={toggleMenu}
+                  >
+                    ADMIN LOGIN
+                  </Link>
+                </li>
+                <li style={{ marginBottom: "10px" }}>
+                  <Link
+                    to="/admin-register"
+                    style={{
+                      color: "#dc3545",
+                      textDecoration: "none",
+                      fontSize: "1.1rem",
+                      fontWeight: "bold",
+                    }}
+                    onClick={toggleMenu}
+                  >
+                    ADMIN REGISTRATION
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       )}
