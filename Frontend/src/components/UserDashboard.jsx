@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { itineraryAPI, reviewAPI } from "../services/api";
+import { itineraryAPI } from "../services/api";
 import ReusableButton from "./ReusableButton";
 
 function UserDashboard() {
@@ -8,15 +8,14 @@ function UserDashboard() {
   const [user, setUser] = useState(null);
   const [itineraries, setItineraries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
-    // Get user from localStorage
     const userData = localStorage.getItem("user");
     if (!userData) {
       navigate("/login");
       return;
     }
-
     const parsedUser = JSON.parse(userData);
     setUser(parsedUser);
     fetchUserItineraries(parsedUser.id);
@@ -39,15 +38,12 @@ function UserDashboard() {
   };
 
   const handleDeleteItinerary = async (id) => {
-    if (window.confirm("Are you sure you want to delete this itinerary?")) {
-      try {
-        await itineraryAPI.delete(id);
-        // Refresh the list
-        fetchUserItineraries(user.id);
-      } catch (error) {
-        console.error("Error deleting itinerary:", error);
-        alert("Failed to delete itinerary");
-      }
+    try {
+      await itineraryAPI.delete(id);
+      setConfirmDeleteId(null);
+      fetchUserItineraries(user.id);
+    } catch (error) {
+      console.error("Error deleting itinerary:", error);
     }
   };
 
@@ -166,20 +162,21 @@ function UserDashboard() {
 
               <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
                 <button
-                  onClick={() => navigate(`/itinerary/${itinerary.id}`)}
+                  onClick={() => navigate(`/edit-itinerary/${itinerary.id}`)}
                   style={{
                     padding: "8px 15px",
-                    backgroundColor: "#007BFF",
-                    color: "white",
+                    backgroundColor: "#ffc107",
+                    color: "#000",
                     border: "none",
                     borderRadius: "5px",
                     cursor: "pointer",
+                    fontWeight: "bold",
                   }}
                 >
-                  View Details
+                  Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteItinerary(itinerary.id)}
+                  onClick={() => setConfirmDeleteId(itinerary.id)}
                   style={{
                     padding: "8px 15px",
                     backgroundColor: "#dc3545",
@@ -192,6 +189,51 @@ function UserDashboard() {
                   Delete
                 </button>
               </div>
+
+              {/* Inline delete confirmation */}
+              {confirmDeleteId === itinerary.id && (
+                <div
+                  style={{
+                    marginTop: "10px",
+                    padding: "10px",
+                    backgroundColor: "#fff3cd",
+                    borderRadius: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <span style={{ color: "#856404" }}>
+                    Are you sure you want to delete this itinerary?
+                  </span>
+                  <button
+                    onClick={() => handleDeleteItinerary(itinerary.id)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Yes, Delete
+                  </button>
+                  <button
+                    onClick={() => setConfirmDeleteId(null)}
+                    style={{
+                      padding: "5px 15px",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

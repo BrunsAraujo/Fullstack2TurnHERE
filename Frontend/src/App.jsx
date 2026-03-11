@@ -21,6 +21,7 @@ import AdminLogin from "./components/AdminLogin";
 import AdminRegistration from "./components/AdminRegistration";
 import AdminDashboard from "./components/AdminDashboard";
 import TripSaver from "./components/TripSaver";
+import EditItinerary from "./components/EditItinerary";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -85,6 +86,7 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-register" element={<AdminRegistration />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/edit-itinerary/:id" element={<EditItinerary />} />
           </Routes>
         </main>
 
