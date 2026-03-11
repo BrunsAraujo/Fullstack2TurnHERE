@@ -30,6 +30,7 @@ public class Attraction {
         WINERY,
         MUSEUM,
         PARK,
+        RESTAURANT,
         WALKING_TRAILS,
         CEMETERIES,
         BARNS,
