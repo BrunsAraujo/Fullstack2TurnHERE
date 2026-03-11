@@ -522,13 +522,17 @@ function AdminDashboard() {
               }}
             >
               <option value="">Select Type</option>
+              <option value="ANTIQUE_SHOP">Antique Shop</option>
+              <option value="BREWERY">Brewery</option>
+              <option value="WINERY">Winery</option>
               <option value="MUSEUM">Museum</option>
               <option value="PARK">Park</option>
               <option value="RESTAURANT">Restaurant</option>
-              <option value="WINERY">Winery</option>
-              <option value="HISTORICAL_SITE">Historical Site</option>
-              <option value="ANTIQUE_SHOP">Antique Shop</option>
+              <option value="WALKING_TRAILS">Walking Trails</option>
+              <option value="CEMETERIES">Cemeteries</option>
+              <option value="BARNS">Barns</option>
               <option value="CIVIL_WAR">Civil War Site</option>
+              <option value="HISTORICAL_INTEREST">Historical Interest</option>
             </select>
 
             <textarea
