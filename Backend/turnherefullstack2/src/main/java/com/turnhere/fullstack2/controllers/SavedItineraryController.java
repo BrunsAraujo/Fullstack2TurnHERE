@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+// REST controller for managing user-saved itineraries (CRUD operations)
 @RestController
 @RequestMapping("/api/itineraries")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -34,14 +35,14 @@ public class SavedItineraryController {
     @Autowired
     private AttractionRepository attractionRepository;
 
-    // Get all saved itineraries for a user
+    // Returns all saved itineraries belonging to a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SavedItinerary>> getItinerariesByUser(@PathVariable Long userId) {
         List<SavedItinerary> itineraries = savedItineraryRepository.findByUserId(userId);
         return ResponseEntity.ok(itineraries);
     }
 
-    // Get a specific saved itinerary by ID
+    // Returns a single saved itinerary by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getItineraryById(@PathVariable Long id) {
         Optional<SavedItinerary> itinerary = savedItineraryRepository.findById(id);
@@ -51,23 +52,24 @@ public class SavedItineraryController {
         return ResponseEntity.ok(itinerary.get());
     }
 
-    // Get all saved itineraries (for admin or public view)
+    // Returns all saved itineraries (used for admin or public view)
     @GetMapping
     public ResponseEntity<List<SavedItinerary>> getAllItineraries() {
         List<SavedItinerary> itineraries = savedItineraryRepository.findAll();
         return ResponseEntity.ok(itineraries);
     }
 
-    // Create a new saved itinerary
+    // Creates a new saved itinerary linked to a user, optional city, and attractions
     @PostMapping
     public ResponseEntity<?> createItinerary(@RequestBody SavedItineraryRequest request) {
-        // Validate user
+
+        // Validates that the user exists
         Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found");
         }
 
-        // Validate city (optional)
+        // Validates city if provided (city is optional)
         City city = null;
         if (request.getCityId() != null) {
             Optional<City> cityOptional = cityRepository.findById(request.getCityId());
@@ -77,13 +79,12 @@ public class SavedItineraryController {
             city = cityOptional.get();
         }
 
-        // Validate attractions
+        // Validates that all provided attraction IDs exist in the database
         List<Attraction> attractions = attractionRepository.findAllById(request.getAttractionIds());
         if (attractions.size() != request.getAttractionIds().size()) {
             return ResponseEntity.badRequest().body("One or more attractions not found");
         }
 
-        // Create itinerary
         SavedItinerary itinerary = new SavedItinerary();
         itinerary.setName(request.getName());
         itinerary.setDescription(request.getDescription());
@@ -95,7 +96,7 @@ public class SavedItineraryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedItinerary);
     }
 
-    // Update a saved itinerary
+    // Updates an existing saved itinerary's name, description, city, and attractions
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItinerary(@PathVariable Long id, @RequestBody SavedItineraryRequest request) {
         Optional<SavedItinerary> itineraryOptional = savedItineraryRepository.findById(id);
@@ -105,7 +106,7 @@ public class SavedItineraryController {
 
         SavedItinerary itinerary = itineraryOptional.get();
 
-        // Update city if provided
+        // Updates city only if a new cityId is provided
         if (request.getCityId() != null) {
             Optional<City> cityOptional = cityRepository.findById(request.getCityId());
             if (cityOptional.isEmpty()) {
@@ -114,7 +115,7 @@ public class SavedItineraryController {
             itinerary.setCity(cityOptional.get());
         }
 
-        // Update attractions if provided
+        // Updates attractions only if a new list is provided and all IDs are valid
         if (request.getAttractionIds() != null && !request.getAttractionIds().isEmpty()) {
             List<Attraction> attractions = attractionRepository.findAllById(request.getAttractionIds());
             if (attractions.size() != request.getAttractionIds().size()) {
@@ -123,7 +124,7 @@ public class SavedItineraryController {
             itinerary.setAttractions(attractions);
         }
 
-        // Update name and description
+        // Updates name and description only if new values are provided
         if (request.getName() != null) {
             itinerary.setName(request.getName());
         }
@@ -135,7 +136,7 @@ public class SavedItineraryController {
         return ResponseEntity.ok(updatedItinerary);
     }
 
-    // Delete a saved itinerary
+    // Deletes a saved itinerary by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteItinerary(@PathVariable Long id) {
         if (!savedItineraryRepository.existsById(id)) {

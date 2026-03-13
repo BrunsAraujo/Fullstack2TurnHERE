@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
+// Repository for Itinerary entity - provides standard CRUD operations via JpaRepository
 @Repository
 public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
-    // Find all itineraries for a specific city
+    // Returns all itineraries associated with a specific city
     List<Itinerary> findByCityId(Long cityId);
 
-    // Find itinerary by name
+    // Returns a single itinerary matching the given name
     Itinerary findByName(String name);
 }

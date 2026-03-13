@@ -1,10 +1,11 @@
 package com.turnhere.fullstack2.dto;
 
+// DTO for capturing review form data from the frontend
 public class ReviewRequest {
-    private Long userId;
-    private Long itineraryId;
-    private String comment;
-    private Integer rating;
+    private Long userId;        // References the user submitting the review
+    private Long itineraryId;   // References the itinerary being reviewed
+    private String comment;     // User's written feedback
+    private Integer rating;     // Numeric rating between 1 and 5
 
     // Constructors
     public ReviewRequest() {}

@@ -1,5 +1,3 @@
-//updading user entity to add login for admin
-
 package com.turnhere.fullstack2.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,9 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// Entity representing a user stored in the "users" table
+// Supports both USER and ADMIN roles via the UserRole enum
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,26 +18,34 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    // Password is stored as a BCrypt hash (never plain text)
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
 
+    // Allows accounts to be disabled without deleting them
     @Column(nullable = false)
     private Boolean enabled = true;
 
+    // Stored as a string in the database (USER or ADMIN)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.USER;
 
+    // Automatically set to current time when the user is created
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // One user can have many saved itineraries
+    // JsonIgnore prevents infinite recursion during serialization
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<SavedItinerary> savedItineraries;
 
+    // One user can have many reviews
+    // JsonIgnore prevents infinite recursion during serialization
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Review> reviews;
@@ -44,6 +53,7 @@ public class User {
     // Constructors
     public User() {}
 
+    // Constructor for creating a standard user with default role of USER
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;

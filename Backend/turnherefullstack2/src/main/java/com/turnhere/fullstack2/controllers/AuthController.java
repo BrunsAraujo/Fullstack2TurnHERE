@@ -1,6 +1,3 @@
-//Add Admin registration
-//fix admin login
-
 package com.turnhere.fullstack2.controllers;
 
 import com.turnhere.fullstack2.dto.UserLoginRequest;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+// REST controller handling user and admin authentication (register and login)
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -24,9 +22,11 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    // BCrypt password encoder injected from SecurityConfig
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Registers a new regular user with a hashed password and USER role
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -39,7 +39,7 @@ public class AuthController {
 
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // Hash password before saving
         user.setEmail(request.getEmail());
         user.setEnabled(true);
         user.setRole(UserRole.USER);
@@ -48,9 +48,11 @@ public class AuthController {
         return ResponseEntity.ok(savedUser);
     }
 
+    // Registers a new admin - requires a secret key to prevent unauthorized admin creation
     @PostMapping("/register-admin")
     public ResponseEntity<?> registerAdmin(@RequestBody AdminRegistrationRequest request) {
-        // Verify admin secret key
+
+        // Validates the admin secret key before proceeding
         if (!request.getAdminSecretKey().equals("TURNHERE_ADMIN_2026")) {
             return ResponseEntity.badRequest().body("Invalid admin secret key");
         }
@@ -65,7 +67,7 @@ public class AuthController {
 
         User admin = new User();
         admin.setUsername(request.getUsername());
-        admin.setPassword(passwordEncoder.encode(request.getPassword()));
+        admin.setPassword(passwordEncoder.encode(request.getPassword())); // Hash password before saving
         admin.setEmail(request.getEmail());
         admin.setEnabled(true);
         admin.setRole(UserRole.ADMIN);
@@ -74,6 +76,7 @@ public class AuthController {
         return ResponseEntity.ok(savedAdmin);
     }
 
+    // Authenticates a user or admin using BCrypt password matching
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest request) {
         Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
@@ -84,6 +87,7 @@ public class AuthController {
 
         User user = userOptional.get();
 
+        // Compares the plain text password against the stored hashed password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
@@ -95,6 +99,7 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    // Retrieves a user by their ID (used for profile lookups)
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)

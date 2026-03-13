@@ -1,12 +1,13 @@
 package com.turnhere.fullstack2.dto;
 
+// DTO for capturing attraction form data from the frontend
 public class AttractionRequest {
 
     private String name;
-    private String type;
+    private String type;        // Sent as a String, converted to enum in the controller
     private String description;
     private String address;
-    private Long cityId;
+    private Long cityId;        // References the city this attraction belongs to
 
     // Constructors
     public AttractionRequest() {

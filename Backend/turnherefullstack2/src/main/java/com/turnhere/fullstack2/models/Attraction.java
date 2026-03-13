@@ -2,8 +2,9 @@ package com.turnhere.fullstack2.models;
 
 import jakarta.persistence.*;
 
+// Entity representing an attraction stored in the "attraction" table
 @Entity
-@Table(name = "attraction")  // Changed from "attractions" to "attraction"
+@Table(name = "attraction")
 public class Attraction {
 
     @Id
@@ -12,18 +13,22 @@ public class Attraction {
 
     private String name;
 
+    // Stored as a string in the database using the enum name
     @Enumerated(EnumType.STRING)
     private Type type;
 
     private String address;
 
+    // Allows longer text for attraction descriptions
     @Column(length = 1000)
     private String description;
 
+    // Many attractions can belong to one city
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
+    // Enum defining all valid attraction types for the application
     public enum Type {
         ANTIQUE_SHOP,
         BREWERY,
@@ -38,8 +43,7 @@ public class Attraction {
         HISTORICAL_INTEREST
     }
 
-    // getters and setters
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }

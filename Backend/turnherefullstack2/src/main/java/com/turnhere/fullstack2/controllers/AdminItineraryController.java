@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// REST controller for admin itinerary management (CRUD operations)
 @RestController
 @RequestMapping("/api/admin/itineraries")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -21,6 +22,7 @@ public class AdminItineraryController {
     private final CityRepository cityRepository;
     private final AttractionRepository attractionRepository;
 
+    // Constructor injection of all required repositories
     public AdminItineraryController(ItineraryRepository itineraryRepository,
                                     CityRepository cityRepository,
                                     AttractionRepository attractionRepository) {
@@ -29,13 +31,13 @@ public class AdminItineraryController {
         this.attractionRepository = attractionRepository;
     }
 
-    // GET all itineraries
+    // Returns all itineraries in the database
     @GetMapping
     public ResponseEntity<List<Itinerary>> getAllItineraries() {
         return ResponseEntity.ok(itineraryRepository.findAll());
     }
 
-    // GET itinerary by ID
+    // Returns a single itinerary by ID
     @GetMapping("/{id}")
     public ResponseEntity<Itinerary> getItineraryById(@PathVariable Long id) {
         return itineraryRepository.findById(id)
@@ -43,28 +45,26 @@ public class AdminItineraryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // GET itineraries by city ID
+    // Returns all itineraries associated with a specific city
     @GetMapping("/city/{cityId}")
     public ResponseEntity<List<Itinerary>> getItinerariesByCity(@PathVariable Long cityId) {
         return ResponseEntity.ok(itineraryRepository.findByCityId(cityId));
     }
 
-    // POST - Create new itinerary
+    // Creates a new itinerary and links it to a city and optional attractions
     @PostMapping
     public ResponseEntity<Itinerary> createItinerary(@RequestBody ItineraryRequest request) {
 
-        // Find the city
         City city = cityRepository.findById(request.getCityId())
                 .orElseThrow(() -> new RuntimeException("City not found"));
 
-        // Create itinerary
         Itinerary itinerary = new Itinerary();
         itinerary.setName(request.getName());
         itinerary.setDescription(request.getDescription());
         itinerary.setDuration(request.getDuration());
         itinerary.setCity(city);
 
-        // Add attractions if provided
+        // Links attractions to the itinerary if any are provided
         if (request.getAttractionIds() != null && !request.getAttractionIds().isEmpty()) {
             List<Attraction> attractions = attractionRepository.findAllById(request.getAttractionIds());
             itinerary.setAttractions(attractions);
@@ -74,7 +74,7 @@ public class AdminItineraryController {
         return ResponseEntity.ok(saved);
     }
 
-    // PUT - Update itinerary
+    // Updates an existing itinerary's details, city, and attractions by ID
     @PutMapping("/{id}")
     public ResponseEntity<Itinerary> updateItinerary(@PathVariable Long id, @RequestBody ItineraryRequest request) {
 
@@ -84,14 +84,14 @@ public class AdminItineraryController {
                     itinerary.setDescription(request.getDescription());
                     itinerary.setDuration(request.getDuration());
 
-                    // Update city if provided
+                    // Updates city only if a new cityId is provided
                     if (request.getCityId() != null) {
                         City city = cityRepository.findById(request.getCityId())
                                 .orElseThrow(() -> new RuntimeException("City not found"));
                         itinerary.setCity(city);
                     }
 
-                    // Update attractions if provided
+                    // Updates attractions only if a new list is provided
                     if (request.getAttractionIds() != null) {
                         List<Attraction> attractions = attractionRepository.findAllById(request.getAttractionIds());
                         itinerary.setAttractions(attractions);
@@ -103,7 +103,7 @@ public class AdminItineraryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE itinerary
+    // Deletes an itinerary by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItinerary(@PathVariable Long id) {
         if (!itineraryRepository.existsById(id)) {

@@ -2,12 +2,13 @@ package com.turnhere.fullstack2.dto;
 
 import java.util.List;
 
+// DTO for capturing saved itinerary form data from the frontend (user use)
 public class SavedItineraryRequest {
     private String name;
     private String description;
-    private Long userId;
-    private Long cityId;
-    private List<Long> attractionIds;
+    private Long userId;              // References the user saving the itinerary
+    private Long cityId;              // References the city the itinerary is based in
+    private List<Long> attractionIds; // List of attraction IDs selected by the user
 
     // Constructors
     public SavedItineraryRequest() {}

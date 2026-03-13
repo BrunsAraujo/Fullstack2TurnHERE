@@ -1,3 +1,4 @@
+# Maven build output and wrapper jar
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
@@ -5,6 +6,7 @@ target/
 !**/src/test/**/target/
 
 ### STS ###
+# Spring Tool Suite generated files
 .apt_generated
 .classpath
 .factorypath
@@ -14,12 +16,14 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
+# IntelliJ project and workspace files
 .idea
 *.iws
 *.iml
 *.ipr
 
 ### NetBeans ###
+# NetBeans project files
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -30,4 +34,5 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
+# VS Code workspace settings
 .vscode/
