@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entity representing an admin-created itinerary stored in the "itineraries" table
 @Entity
 @Table(name = "itineraries")
 public class Itinerary {
@@ -15,15 +16,18 @@ public class Itinerary {
 
     private String name;
 
+    // Allows longer text for itinerary descriptions
     @Column(length = 1000)
     private String description;
 
     private Integer duration; // Duration in hours
 
+    // Many itineraries can belong to one city
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
+    // Many-to-many relationship with attractions via a join table
     @ManyToMany
     @JoinTable(
             name = "itinerary_attractions",
@@ -32,14 +36,16 @@ public class Itinerary {
     )
     private List<Attraction> attractions = new ArrayList<>();
 
+    // Automatically records when the itinerary was created
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Constructors
+    // Default constructor sets createdAt to current time
     public Itinerary() {
         this.createdAt = LocalDateTime.now();
     }
 
+    // Constructor for creating a fully populated itinerary
     public Itinerary(String name, String description, Integer duration, City city) {
         this.name = name;
         this.description = description;
@@ -105,7 +111,7 @@ public class Itinerary {
         this.createdAt = createdAt;
     }
 
-    // Helper methods to manage attractions
+    // Helper methods to add or remove a single attraction from the list
     public void addAttraction(Attraction attraction) {
         this.attractions.add(attraction);
     }

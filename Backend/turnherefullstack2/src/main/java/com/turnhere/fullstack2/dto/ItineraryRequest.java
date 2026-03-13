@@ -2,13 +2,14 @@ package com.turnhere.fullstack2.dto;
 
 import java.util.List;
 
+// DTO for capturing itinerary form data from the frontend (admin use)
 public class ItineraryRequest {
 
     private String name;
     private String description;
-    private Integer duration;
-    private Long cityId;
-    private List<Long> attractionIds; // List of attraction IDs to include
+    private Integer duration;           // Duration of the itinerary in days
+    private Long cityId;                // References the city this itinerary is based in
+    private List<Long> attractionIds;   // List of attraction IDs to include in the itinerary
 
     // Constructors
     public ItineraryRequest() {

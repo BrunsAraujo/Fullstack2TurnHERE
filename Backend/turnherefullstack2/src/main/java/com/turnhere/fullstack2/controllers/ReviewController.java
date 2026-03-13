@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+// REST controller for managing user reviews on saved itineraries (CRUD operations)
 @RestController
 @RequestMapping("/api/reviews")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -29,28 +30,28 @@ public class ReviewController {
     @Autowired
     private SavedItineraryRepository savedItineraryRepository;
 
-    // Get all reviews for a specific itinerary
+    // Returns all reviews for a specific itinerary
     @GetMapping("/itinerary/{itineraryId}")
     public ResponseEntity<List<Review>> getReviewsByItinerary(@PathVariable Long itineraryId) {
         List<Review> reviews = reviewRepository.findByItineraryId(itineraryId);
         return ResponseEntity.ok(reviews);
     }
 
-    // Get all reviews by a specific user
+    // Returns all reviews submitted by a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable Long userId) {
         List<Review> reviews = reviewRepository.findByUserId(userId);
         return ResponseEntity.ok(reviews);
     }
 
-    // Get all reviews
+    // Returns all reviews in the database
     @GetMapping
     public ResponseEntity<List<Review>> getAllReviews() {
         List<Review> reviews = reviewRepository.findAll();
         return ResponseEntity.ok(reviews);
     }
 
-    // Get a specific review by ID
+    // Returns a single review by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getReviewById(@PathVariable Long id) {
         Optional<Review> review = reviewRepository.findById(id);
@@ -60,27 +61,27 @@ public class ReviewController {
         return ResponseEntity.ok(review.get());
     }
 
-    // Create a new review
+    // Creates a new review linked to a user and an itinerary
     @PostMapping
     public ResponseEntity<?> createReview(@RequestBody ReviewRequest request) {
-        // Validate user
+
+        // Validates that the user exists
         Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found");
         }
 
-        // Validate itinerary
+        // Validates that the itinerary exists
         Optional<SavedItinerary> itineraryOptional = savedItineraryRepository.findById(request.getItineraryId());
         if (itineraryOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("Itinerary not found");
         }
 
-        // Validate rating (1-5)
+        // Ensures rating is within the allowed range of 1 to 5
         if (request.getRating() != null && (request.getRating() < 1 || request.getRating() > 5)) {
             return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
         }
 
-        // Create review
         Review review = new Review();
         review.setUser(userOptional.get());
         review.setItinerary(itineraryOptional.get());
@@ -91,7 +92,7 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
     }
 
-    // Update a review
+    // Updates an existing review's comment and/or rating by ID
     @PutMapping("/{id}")
     public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewRequest request) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
@@ -101,12 +102,12 @@ public class ReviewController {
 
         Review review = reviewOptional.get();
 
-        // Update comment if provided
+        // Updates comment only if a new value is provided
         if (request.getComment() != null) {
             review.setComment(request.getComment());
         }
 
-        // Update rating if provided
+        // Updates rating only if a new value is provided and within valid range
         if (request.getRating() != null) {
             if (request.getRating() < 1 || request.getRating() > 5) {
                 return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
@@ -118,7 +119,7 @@ public class ReviewController {
         return ResponseEntity.ok(updatedReview);
     }
 
-    // Delete a review
+    // Deletes a review by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Long id) {
         if (!reviewRepository.existsById(id)) {

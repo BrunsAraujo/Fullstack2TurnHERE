@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// REST controller for admin attraction management (CRUD operations)
 @RestController
 @RequestMapping("/api/admin/attractions")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -18,12 +19,14 @@ public class AdminAttractionController {
     private final CityRepository cityRepository;
     private final AttractionRepository attractionRepository;
 
+    // Constructor injection of repositories
     public AdminAttractionController(CityRepository cityRepository,
                                      AttractionRepository attractionRepository) {
         this.cityRepository = cityRepository;
         this.attractionRepository = attractionRepository;
     }
 
+    // Creates a new attraction and links it to an existing city
     @PostMapping
     public ResponseEntity<Attraction> createAttraction(@RequestBody AttractionRequest request) {
 
@@ -32,7 +35,7 @@ public class AdminAttractionController {
 
         Attraction attraction = new Attraction();
         attraction.setName(request.getName());
-        attraction.setType(Attraction.Type.valueOf(request.getType()));
+        attraction.setType(Attraction.Type.valueOf(request.getType())); // Converts string to enum
         attraction.setDescription(request.getDescription());
         attraction.setAddress(request.getAddress());
         attraction.setCity(city);
@@ -41,6 +44,7 @@ public class AdminAttractionController {
         return ResponseEntity.ok(saved);
     }
 
+    // Updates an existing attraction by ID
     @PutMapping("/{id}")
     public ResponseEntity<Attraction> updateAttraction(@PathVariable Long id, @RequestBody AttractionRequest request) {
         Attraction attraction = attractionRepository.findById(id)
@@ -50,7 +54,7 @@ public class AdminAttractionController {
                 .orElseThrow(() -> new RuntimeException("City not found"));
 
         attraction.setName(request.getName());
-        attraction.setType(Attraction.Type.valueOf(request.getType()));
+        attraction.setType(Attraction.Type.valueOf(request.getType())); // Converts string to enum
         attraction.setDescription(request.getDescription());
         attraction.setAddress(request.getAddress());
         attraction.setCity(city);
@@ -59,11 +63,13 @@ public class AdminAttractionController {
         return ResponseEntity.ok(updated);
     }
 
+    // Returns all attractions in the database
     @GetMapping
     public ResponseEntity<List<Attraction>> getAll() {
         return ResponseEntity.ok(attractionRepository.findAll());
     }
 
+    // Deletes an attraction by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (!attractionRepository.existsById(id)) {

@@ -1,12 +1,11 @@
 package com.turnhere.fullstack2.models;
 
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entity representing a city stored in the "cities" table
 @Entity
 @Table(name = "cities")
 public class City {
@@ -19,15 +18,17 @@ public class City {
     private String state;
     private String country;
 
+    // One city can have many attractions
+    // JsonIgnore prevents infinite recursion when serializing city -> attractions -> city
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore  // Prevents infinite recursion during JSON serialization
+    @JsonIgnore
     private List<Attraction> attractions = new ArrayList<>();
 
     // Default constructor
     public City() {
     }
 
-    // Constructor without id
+    // Constructor for creating a city without manually setting an ID
     public City(String name, String state, String country) {
         this.name = name;
         this.state = state;

@@ -1,10 +1,11 @@
 package com.turnhere.fullstack2.dto;
 
+// DTO for capturing admin registration form data from the frontend
 public class AdminRegistrationRequest {
     private String username;
     private String password;
     private String email;
-    private String adminSecretKey;
+    private String adminSecretKey; // Secret key required to authorize admin account creation
 
     // Constructors
     public AdminRegistrationRequest() {}
