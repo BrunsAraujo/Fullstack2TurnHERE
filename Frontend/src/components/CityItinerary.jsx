@@ -3,27 +3,34 @@
 //Works with both parent controlled and route context. Better reusability
 //update for backend integration to add: Fetches city data and attractions from backend; 2 - shows loading state while fetching;
 // 3 - error handling if backend fetch fails; 4 - improved styling for better UX (button styling).
+// CityItinerary component - displays attractions for a selected city
+// Works both as a routed page (via URL param) and as a component (via props)
 
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { cityAPI, attractionAPI } from "../services/api";
 
 function CityItinerary({ city, onBack }) {
   const { cityName } = useParams();
+  const navigate = useNavigate();
   const [cityData, setCityData] = useState(null);
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Ref used to smooth-scroll down to the attractions list
   const detailsRef = useRef(null);
 
+  // Supports both prop-based city object and URL param city name
   const selectedCity = city || cityName;
 
+  // Fetches city and attraction data from the backend when the component loads
   useEffect(() => {
     const fetchCityData = async () => {
       try {
         setLoading(true);
-        console.log("Fetching city data for:", selectedCity);
 
+        // Finds the matching city by name or ID from the full city list
         const citiesResponse = await cityAPI.getAll();
         const foundCity = citiesResponse.data.find(
           (c) =>
@@ -33,15 +40,14 @@ function CityItinerary({ city, onBack }) {
         );
 
         if (foundCity) {
-          console.log("City found:", foundCity);
           setCityData(foundCity);
 
+          // Filters all attractions to only those belonging to this city
           const attractionsResponse = await attractionAPI.getAll();
           const cityAttractions = attractionsResponse.data.filter(
             (attr) => attr.city.id === foundCity.id,
           );
 
-          console.log("Attractions for this city:", cityAttractions);
           setAttractions(cityAttractions);
         } else {
           setError("City not found in database");
@@ -60,12 +66,14 @@ function CityItinerary({ city, onBack }) {
     }
   }, [selectedCity]);
 
+  // Smoothly scrolls the page down to the attractions list
   const scrollToDetails = () => {
     if (detailsRef.current) {
       detailsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  // Shows loading state while data is being fetched
   if (loading) {
     return (
       <div
@@ -83,6 +91,7 @@ function CityItinerary({ city, onBack }) {
     );
   }
 
+  // Shows error message if the fetch fails
   if (error) {
     return (
       <div
@@ -96,11 +105,27 @@ function CityItinerary({ city, onBack }) {
         }}
       >
         <h2 style={{ color: "red" }}>{error}</h2>
-        {onBack && <button onClick={onBack}>Back to City List</button>}
+        {/* Back button - uses onBack prop if provided, otherwise navigates to cities page */}
+        <button
+          onClick={onBack ? onBack : () => navigate("/cities")}
+          style={{
+            marginTop: "30px",
+            padding: "10px 20px",
+            fontSize: "1rem",
+            backgroundColor: "#6c757d",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Back to City List
+        </button>
       </div>
     );
   }
 
+  // Shows not found message if city data is missing
   if (!cityData) {
     return (
       <div
@@ -114,7 +139,22 @@ function CityItinerary({ city, onBack }) {
         }}
       >
         <h2>City not found</h2>
-        {onBack && <button onClick={onBack}>Back to City List</button>}
+        {/* Back button - uses onBack prop if provided, otherwise navigates to cities page */}
+        <button
+          onClick={onBack ? onBack : () => navigate("/cities")}
+          style={{
+            marginTop: "30px",
+            padding: "10px 20px",
+            fontSize: "1rem",
+            backgroundColor: "#6c757d",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Back to City List
+        </button>
       </div>
     );
   }
@@ -130,11 +170,13 @@ function CityItinerary({ city, onBack }) {
         lineHeight: "1.6",
       }}
     >
+      {/* City header */}
       <h2>
         Itinerary for {cityData.name}, {cityData.state}
       </h2>
       <p style={{ color: "#666", fontSize: "1.1rem" }}>{cityData.country}</p>
 
+      {/* Conditionally renders attractions list or a no-attractions message */}
       {attractions.length > 0 ? (
         <>
           <p style={{ marginTop: "20px", fontSize: "1.1rem", color: "#333" }}>
@@ -143,6 +185,7 @@ function CityItinerary({ city, onBack }) {
             {cityData.name}!
           </p>
 
+          {/* Button that scrolls to the attractions list */}
           <button
             onClick={scrollToDetails}
             style={{
@@ -159,6 +202,7 @@ function CityItinerary({ city, onBack }) {
             View Attractions
           </button>
 
+          {/* Attractions list - scroll target via ref */}
           <div
             ref={detailsRef}
             className="details"
@@ -190,6 +234,7 @@ function CityItinerary({ city, onBack }) {
                     border: "1px solid #ddd",
                   }}
                 >
+                  {/* Attraction name */}
                   <h4
                     style={{
                       color: "#007BFF",
@@ -200,6 +245,7 @@ function CityItinerary({ city, onBack }) {
                     {attraction.name}
                   </h4>
 
+                  {/* Attraction type badge - underscores replaced with spaces */}
                   <div
                     style={{
                       display: "inline-block",
@@ -214,6 +260,7 @@ function CityItinerary({ city, onBack }) {
                     {attraction.type.replace(/_/g, " ")}
                   </div>
 
+                  {/* Attraction address */}
                   <p
                     style={{
                       color: "#666",
@@ -224,6 +271,7 @@ function CityItinerary({ city, onBack }) {
                     Address: {attraction.address}
                   </p>
 
+                  {/* Attraction description */}
                   <p style={{ color: "#333", lineHeight: "1.8" }}>
                     {attraction.description}
                   </p>
@@ -233,6 +281,7 @@ function CityItinerary({ city, onBack }) {
           </div>
         </>
       ) : (
+        // Shown when the city has no attractions yet
         <div
           style={{
             marginTop: "30px",
@@ -252,23 +301,22 @@ function CityItinerary({ city, onBack }) {
         </div>
       )}
 
-      {onBack && (
-        <button
-          onClick={onBack}
-          style={{
-            marginTop: "30px",
-            padding: "10px 20px",
-            fontSize: "1rem",
-            backgroundColor: "#6c757d",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Back to City List
-        </button>
-      )}
+      {/* Back button - uses onBack prop if provided, otherwise navigates to cities page */}
+      <button
+        onClick={onBack ? onBack : () => navigate("/cities")}
+        style={{
+          marginTop: "30px",
+          padding: "10px 20px",
+          fontSize: "1rem",
+          backgroundColor: "#6c757d",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Back to City List
+      </button>
       <br />
     </div>
   );

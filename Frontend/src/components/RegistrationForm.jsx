@@ -1,3 +1,6 @@
+// RegistrationForm component - allows new users to create an account
+// Includes frontend validation before sending data to the backend
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
@@ -6,6 +9,7 @@ import ReusableButton from "./ReusableButton";
 function RegistrationForm() {
   const navigate = useNavigate();
 
+  // Form field state for all registration inputs
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -13,9 +17,11 @@ function RegistrationForm() {
     confirmPassword: "",
   });
 
+  // State for inline error and success feedback messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Updates the matching form field when the user types
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -23,30 +29,32 @@ function RegistrationForm() {
     });
   };
 
+  // Validates the form and submits registration data to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
 
-    // Validate passwords match
+    // Validates that both password fields match
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
 
-    // Validate password length
+    // Validates password length is between 8 and 12 characters
     if (formData.password.length < 8 || formData.password.length > 12) {
       setErrorMessage("Password must be 8-12 characters long");
       return;
     }
 
-    // Validate password has a number
+    // Validates that the password contains at least one number
     if (!/\d/.test(formData.password)) {
       setErrorMessage("Password must contain at least one number");
       return;
     }
 
     try {
+      // Sends registration data to the backend
       const response = await authAPI.register({
         username: formData.username,
         email: formData.email,
@@ -55,7 +63,7 @@ function RegistrationForm() {
 
       setSuccessMessage("Registration successful! Redirecting to login...");
 
-      // Redirect to login after 2 seconds
+      // Redirects to login page after 2 seconds
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -82,6 +90,7 @@ function RegistrationForm() {
       <h2 style={{ textAlign: "center", color: "#007BFF" }}>Create Account</h2>
 
       <form onSubmit={handleSubmit}>
+        {/* Username input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -107,6 +116,7 @@ function RegistrationForm() {
           />
         </div>
 
+        {/* Email input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -132,6 +142,7 @@ function RegistrationForm() {
           />
         </div>
 
+        {/* Password input with validation hint */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -160,6 +171,7 @@ function RegistrationForm() {
           </small>
         </div>
 
+        {/* Confirm password input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -185,6 +197,7 @@ function RegistrationForm() {
           />
         </div>
 
+        {/* Inline error message displayed on validation or API failure */}
         {errorMessage && (
           <div
             style={{
@@ -199,6 +212,7 @@ function RegistrationForm() {
           </div>
         )}
 
+        {/* Inline success message displayed after successful registration */}
         {successMessage && (
           <div
             style={{
@@ -213,6 +227,7 @@ function RegistrationForm() {
           </div>
         )}
 
+        {/* Submit button */}
         <button
           type="submit"
           style={{
@@ -231,6 +246,7 @@ function RegistrationForm() {
           Register
         </button>
 
+        {/* Navigation link to login for existing users */}
         <div style={{ textAlign: "center", marginTop: "15px" }}>
           <p>Already have an account?</p>
           <ReusableButton label="Go to Login" path="/login" />

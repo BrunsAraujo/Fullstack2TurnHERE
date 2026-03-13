@@ -2,6 +2,9 @@
 //updated app.jsx to include user authentication state management, and to route to the user dashboard on successful login. Also added a welcome message on the home page, and styled it for better user experience.
 //Added admin routes
 
+// App.jsx - Root component of the TurnHERE application
+// Defines all client-side routes and wraps the app in the Router context
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Header from "./components/Header";
@@ -16,7 +19,6 @@ import LoginForm from "./components/LoginForm";
 import RegistrationForm from "./components/RegistrationForm";
 import UserDashboard from "./components/UserDashboard";
 import CreateItinerary from "./components/CreateItinerary";
-import ItineraryDetail from "./components/ItineraryDetail";
 import AdminLogin from "./components/AdminLogin";
 import AdminRegistration from "./components/AdminRegistration";
 import AdminDashboard from "./components/AdminDashboard";
@@ -24,8 +26,10 @@ import TripSaver from "./components/TripSaver";
 import EditItinerary from "./components/EditItinerary";
 
 function App() {
+  // Stores the logged-in user in state for passing to child components
   const [user, setUser] = useState(null);
 
+  // Updates user state when login is successful
   const handleLogin = (userData) => {
     setUser(userData);
   };
@@ -35,11 +39,14 @@ function App() {
       <div
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
+        {/* Header and menu are shown on every page */}
         <Header />
         <CollapsibleMenu />
 
+        {/* Main content area grows to fill available space */}
         <main style={{ flex: 1 }}>
           <Routes>
+            {/* Home page with welcome message */}
             <Route
               path="/"
               element={
@@ -63,33 +70,39 @@ function App() {
               }
             />
 
+            {/* Public routes - accessible to all users */}
             <Route path="/about" element={<About />} />
             <Route path="/cities" element={<CityList />} />
             <Route path="/search" element={<Search />} />
             <Route path="/cities/:cityName" element={<CityItinerary />} />
             <Route path="/CityRandomizer" element={<CityRandomizer />} />
 
+            {/* Authentication routes */}
             <Route path="/register" element={<RegistrationForm />} />
             <Route
               path="/login"
               element={<LoginForm onLogin={handleLogin} />}
             />
 
+            {/* User routes - require user login */}
             <Route path="/user-dashboard" element={<UserDashboard />} />
             <Route path="/create-itinerary" element={<CreateItinerary />} />
-            <Route path="/itinerary/:id" element={<ItineraryDetail />} />
+
+            <Route path="/edit-itinerary/:id" element={<EditItinerary />} />
             <Route
               path="/trip-saver"
+              // Passes username to TripSaver or defaults to "Guest"
               element={<TripSaver user={user?.username || "Guest"} />}
             />
 
+            {/* Admin routes - require admin login */}
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-register" element={<AdminRegistration />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/edit-itinerary/:id" element={<EditItinerary />} />
           </Routes>
         </main>
 
+        {/* Footer is shown on every page */}
         <Footer />
       </div>
     </Router>

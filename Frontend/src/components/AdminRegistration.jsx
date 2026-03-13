@@ -1,3 +1,6 @@
+// Admin Registration page - allows creation of new admin accounts
+// Requires a secret key to prevent unauthorized admin registrations
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
@@ -6,6 +9,7 @@ import ReusableButton from "./ReusableButton";
 function AdminRegistration() {
   const navigate = useNavigate();
 
+  // Form field state for all registration inputs
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -14,9 +18,11 @@ function AdminRegistration() {
     adminSecretKey: "",
   });
 
+  // State for inline error and success feedback messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Updates the matching form field when user types
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,27 +30,32 @@ function AdminRegistration() {
     });
   };
 
+  // Handles form submission with frontend validation before calling the API
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
 
+    // Validates that both password fields match
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
 
+    // Validates password length is between 8 and 12 characters
     if (formData.password.length < 8 || formData.password.length > 12) {
       setErrorMessage("Password must be 8-12 characters long");
       return;
     }
 
+    // Validates that the password contains at least one number
     if (!/\d/.test(formData.password)) {
       setErrorMessage("Password must contain at least one number");
       return;
     }
 
     try {
+      // Sends registration data to the backend including the admin secret key
       const response = await authAPI.registerAdmin({
         username: formData.username,
         email: formData.email,
@@ -56,6 +67,7 @@ function AdminRegistration() {
         "Admin account created successfully! Redirecting to login...",
       );
 
+      // Redirects to admin login page after 2 seconds
       setTimeout(() => {
         navigate("/admin-login");
       }, 2000);
@@ -87,6 +99,7 @@ function AdminRegistration() {
       </p>
 
       <form onSubmit={handleSubmit}>
+        {/* Username input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -112,6 +125,7 @@ function AdminRegistration() {
           />
         </div>
 
+        {/* Email input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -137,6 +151,7 @@ function AdminRegistration() {
           />
         </div>
 
+        {/* Password input with validation hint */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -165,6 +180,7 @@ function AdminRegistration() {
           </small>
         </div>
 
+        {/* Confirm password input */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -190,6 +206,7 @@ function AdminRegistration() {
           />
         </div>
 
+        {/* Admin secret key input - required to authorize admin account creation */}
         <div style={{ marginBottom: "15px" }}>
           <label
             style={{
@@ -219,6 +236,7 @@ function AdminRegistration() {
           </small>
         </div>
 
+        {/* Inline error message displayed on validation or API failure */}
         {errorMessage && (
           <div
             style={{
@@ -233,6 +251,7 @@ function AdminRegistration() {
           </div>
         )}
 
+        {/* Inline success message displayed after successful registration */}
         {successMessage && (
           <div
             style={{
@@ -247,6 +266,7 @@ function AdminRegistration() {
           </div>
         )}
 
+        {/* Submit button */}
         <button
           type="submit"
           style={{
@@ -265,6 +285,7 @@ function AdminRegistration() {
           Create Admin Account
         </button>
 
+        {/* Navigation back to home */}
         <div style={{ textAlign: "center", marginTop: "15px" }}>
           <ReusableButton label="Back to Home" path="/" />
         </div>

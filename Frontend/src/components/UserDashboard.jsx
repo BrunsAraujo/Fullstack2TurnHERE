@@ -1,3 +1,7 @@
+// UserDashboard component - displays the logged-in user's saved itineraries
+// Allows the user to create, edit, and delete itineraries
+// Protected route: redirects to login if no user session is found
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { itineraryAPI } from "../services/api";
@@ -8,8 +12,10 @@ function UserDashboard() {
   const [user, setUser] = useState(null);
   const [itineraries, setItineraries] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Tracks which itinerary is pending inline delete confirmation
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
+  // Checks for valid user session and fetches itineraries on mount
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (!userData) {
@@ -21,6 +27,7 @@ function UserDashboard() {
     fetchUserItineraries(parsedUser.id);
   }, [navigate]);
 
+  // Fetches all saved itineraries belonging to the logged-in user
   const fetchUserItineraries = async (userId) => {
     try {
       const response = await itineraryAPI.getByUserId(userId);
@@ -32,11 +39,13 @@ function UserDashboard() {
     }
   };
 
+  // Clears user session and redirects to home page
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
 
+  // Deletes an itinerary by ID and refreshes the list
   const handleDeleteItinerary = async (id) => {
     try {
       await itineraryAPI.delete(id);
@@ -47,6 +56,7 @@ function UserDashboard() {
     }
   };
 
+  // Shows loading state while itineraries are being fetched
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
@@ -55,6 +65,7 @@ function UserDashboard() {
 
   return (
     <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
+      {/* Header with welcome message and logout button */}
       <div
         style={{
           display: "flex",
@@ -80,6 +91,7 @@ function UserDashboard() {
         </button>
       </div>
 
+      {/* Action buttons for creating a new itinerary or going back home */}
       <div style={{ marginBottom: "30px" }}>
         <button
           onClick={() => navigate("/create-itinerary")}
@@ -102,6 +114,7 @@ function UserDashboard() {
 
       <h2>My Saved Itineraries ({itineraries.length})</h2>
 
+      {/* Shows empty state if the user has no saved itineraries */}
       {itineraries.length === 0 ? (
         <div
           style={{
@@ -117,6 +130,7 @@ function UserDashboard() {
           <p>Click "Create New Itinerary" to plan your first trip!</p>
         </div>
       ) : (
+        // Renders each saved itinerary as a card
         <div style={{ display: "grid", gap: "20px" }}>
           {itineraries.map((itinerary) => (
             <div
@@ -128,6 +142,7 @@ function UserDashboard() {
                 border: "2px solid #ddd",
               }}
             >
+              {/* Itinerary name and description */}
               <h3 style={{ color: "#007BFF", marginBottom: "10px" }}>
                 {itinerary.name}
               </h3>
@@ -136,6 +151,7 @@ function UserDashboard() {
                 {itinerary.description}
               </p>
 
+              {/* City info shown if available */}
               {itinerary.city && (
                 <p style={{ marginBottom: "10px" }}>
                   <strong>City:</strong> {itinerary.city.name},{" "}
@@ -143,6 +159,7 @@ function UserDashboard() {
                 </p>
               )}
 
+              {/* Attractions list shown if any are linked to the itinerary */}
               {itinerary.attractions && itinerary.attractions.length > 0 && (
                 <div style={{ marginBottom: "15px" }}>
                   <strong>Attractions ({itinerary.attractions.length}):</strong>
@@ -156,11 +173,14 @@ function UserDashboard() {
                 </div>
               )}
 
+              {/* Creation date formatted for display */}
               <p style={{ fontSize: "0.9rem", color: "#999" }}>
                 Created: {new Date(itinerary.createdAt).toLocaleDateString()}
               </p>
 
+              {/* Edit and Delete action buttons */}
               <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
+                {/* Edit button navigates to the EditItinerary page */}
                 <button
                   onClick={() => navigate(`/edit-itinerary/${itinerary.id}`)}
                   style={{
@@ -175,6 +195,8 @@ function UserDashboard() {
                 >
                   Edit
                 </button>
+
+                {/* Delete button triggers inline confirmation instead of browser alert */}
                 <button
                   onClick={() => setConfirmDeleteId(itinerary.id)}
                   style={{
@@ -190,7 +212,7 @@ function UserDashboard() {
                 </button>
               </div>
 
-              {/* Inline delete confirmation */}
+              {/* Inline delete confirmation panel */}
               {confirmDeleteId === itinerary.id && (
                 <div
                   style={{

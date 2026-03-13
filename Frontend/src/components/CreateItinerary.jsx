@@ -1,3 +1,6 @@
+// CreateItinerary component - allows logged-in users to create and save a new itinerary
+// Protected route: redirects to login if no user session is found
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { itineraryAPI, cityAPI, attractionAPI } from "../services/api";
@@ -7,6 +10,7 @@ function CreateItinerary() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
+  // Form field state for the new itinerary
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -16,12 +20,13 @@ function CreateItinerary() {
 
   const [cities, setCities] = useState([]);
   const [attractions, setAttractions] = useState([]);
+  // Attractions filtered by the selected city
   const [filteredAttractions, setFilteredAttractions] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Checks for valid user session and fetches cities and attractions on mount
   useEffect(() => {
-    // Get user from localStorage
     const userData = localStorage.getItem("user");
     if (!userData) {
       navigate("/login");
@@ -31,6 +36,7 @@ function CreateItinerary() {
     fetchCitiesAndAttractions();
   }, [navigate]);
 
+  // Fetches all cities and attractions from the backend
   const fetchCitiesAndAttractions = async () => {
     try {
       const [citiesResponse, attractionsResponse] = await Promise.all([
@@ -45,15 +51,15 @@ function CreateItinerary() {
     }
   };
 
+  // Updates selected city and filters attractions to match the chosen city
   const handleCityChange = (e) => {
     const cityId = e.target.value;
     setFormData({
       ...formData,
       cityId: cityId,
-      attractionIds: [], // Reset selected attractions when city changes
+      attractionIds: [], // Resets attraction selection when city changes
     });
 
-    // Filter attractions by selected city
     if (cityId) {
       const filtered = attractions.filter(
         (attraction) => attraction.city.id === parseInt(cityId),
@@ -64,6 +70,7 @@ function CreateItinerary() {
     }
   };
 
+  // Toggles an attraction's selection on or off when clicked
   const handleAttractionToggle = (attractionId) => {
     setFormData((prevData) => {
       const isSelected = prevData.attractionIds.includes(attractionId);
@@ -76,6 +83,7 @@ function CreateItinerary() {
     });
   };
 
+  // Validates the form and submits the new itinerary to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -87,6 +95,7 @@ function CreateItinerary() {
       return;
     }
 
+    // Requires at least one attraction to be selected
     if (formData.attractionIds.length === 0) {
       setMessage("Please select at least one attraction");
       setLoading(false);
@@ -105,6 +114,7 @@ function CreateItinerary() {
       await itineraryAPI.create(itineraryData);
       setMessage("Itinerary created successfully! Redirecting...");
 
+      // Redirects to user dashboard after successful creation
       setTimeout(() => {
         navigate("/user-dashboard");
       }, 1500);
@@ -133,7 +143,7 @@ function CreateItinerary() {
           borderRadius: "8px",
         }}
       >
-        {/* Itinerary Name */}
+        {/* Itinerary name input */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -159,7 +169,7 @@ function CreateItinerary() {
           />
         </div>
 
-        {/* Description */}
+        {/* Description input */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -188,7 +198,7 @@ function CreateItinerary() {
           />
         </div>
 
-        {/* City Selection */}
+        {/* City dropdown - populated from backend data */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -219,7 +229,7 @@ function CreateItinerary() {
           </select>
         </div>
 
-        {/* Attractions Selection */}
+        {/* Attractions selection - only shown after a city is selected */}
         {formData.cityId && (
           <div style={{ marginBottom: "20px" }}>
             <label
@@ -247,12 +257,14 @@ function CreateItinerary() {
                   backgroundColor: "white",
                 }}
               >
+                {/* Each attraction is a clickable card with a checkbox */}
                 {filteredAttractions.map((attraction) => (
                   <div
                     key={attraction.id}
                     style={{
                       padding: "10px",
                       marginBottom: "10px",
+                      // Highlights selected attractions in green
                       backgroundColor: formData.attractionIds.includes(
                         attraction.id,
                       )
@@ -268,7 +280,7 @@ function CreateItinerary() {
                       <input
                         type="checkbox"
                         checked={formData.attractionIds.includes(attraction.id)}
-                        onChange={() => {}} // Handled by div onClick
+                        onChange={() => {}} // Click handled by parent div
                         style={{ marginRight: "10px" }}
                       />
                       <div>
@@ -286,7 +298,7 @@ function CreateItinerary() {
           </div>
         )}
 
-        {/* Message Display */}
+        {/* Inline success or error message */}
         {message && (
           <div
             style={{
@@ -307,8 +319,9 @@ function CreateItinerary() {
           </div>
         )}
 
-        {/* Buttons */}
+        {/* Submit and cancel buttons */}
         <div style={{ display: "flex", gap: "10px" }}>
+          {/* Submit button is disabled while the request is in progress */}
           <button
             type="submit"
             disabled={loading}
@@ -327,6 +340,7 @@ function CreateItinerary() {
             {loading ? "Creating..." : "Create Itinerary"}
           </button>
 
+          {/* Cancel button navigates back to the user dashboard */}
           <button
             type="button"
             onClick={() => navigate("/user-dashboard")}

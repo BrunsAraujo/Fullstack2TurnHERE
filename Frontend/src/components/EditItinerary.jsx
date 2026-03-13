@@ -1,12 +1,17 @@
+// EditItinerary component - allows logged-in users to edit an existing saved itinerary
+// Pre-populates the form with the current itinerary data fetched from the backend
+// Protected route: redirects to login if no user session is found
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { itineraryAPI, cityAPI, attractionAPI } from "../services/api";
 
 function EditItinerary() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams(); // Gets the itinerary ID from the URL
   const [user, setUser] = useState(null);
 
+  // Form field state pre-populated with existing itinerary data
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -16,11 +21,14 @@ function EditItinerary() {
 
   const [cities, setCities] = useState([]);
   const [attractions, setAttractions] = useState([]);
+  // Attractions filtered by the currently selected city
   const [filteredAttractions, setFilteredAttractions] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  // Tracks initial data fetch before showing the form
   const [initialLoading, setInitialLoading] = useState(true);
 
+  // Checks for valid user session and loads all required data on mount
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (!userData) {
@@ -31,6 +39,7 @@ function EditItinerary() {
     loadData();
   }, [navigate]);
 
+  // Fetches cities, attractions, and the existing itinerary data in parallel
   const loadData = async () => {
     try {
       const [citiesRes, attractionsRes, itineraryRes] = await Promise.all([
@@ -46,9 +55,11 @@ function EditItinerary() {
       setCities(allCities);
       setAttractions(allAttractions);
 
+      // Extracts city ID and attraction IDs from the existing itinerary
       const cityId = itinerary.city?.id?.toString() || "";
       const attractionIds = itinerary.attractions?.map((a) => a.id) || [];
 
+      // Pre-populates the form with the existing itinerary values
       setFormData({
         name: itinerary.name,
         description: itinerary.description,
@@ -56,6 +67,7 @@ function EditItinerary() {
         attractionIds: attractionIds,
       });
 
+      // Pre-filters attractions for the itinerary's existing city
       if (cityId) {
         const filtered = allAttractions.filter(
           (a) => a.city.id === parseInt(cityId),
@@ -71,9 +83,10 @@ function EditItinerary() {
     }
   };
 
+  // Updates selected city and re-filters attractions when city changes
   const handleCityChange = (e) => {
     const cityId = e.target.value;
-    setFormData({ ...formData, cityId: cityId, attractionIds: [] });
+    setFormData({ ...formData, cityId: cityId, attractionIds: [] }); // Resets attractions on city change
 
     if (cityId) {
       const filtered = attractions.filter(
@@ -85,6 +98,7 @@ function EditItinerary() {
     }
   };
 
+  // Toggles an attraction's selection on or off when clicked
   const handleAttractionToggle = (attractionId) => {
     setFormData((prevData) => {
       const isSelected = prevData.attractionIds.includes(attractionId);
@@ -97,11 +111,13 @@ function EditItinerary() {
     });
   };
 
+  // Validates the form and submits the updated itinerary to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
 
+    // Requires at least one attraction to be selected
     if (formData.attractionIds.length === 0) {
       setMessage("Please select at least one attraction");
       setLoading(false);
@@ -117,9 +133,11 @@ function EditItinerary() {
         attractionIds: formData.attractionIds,
       };
 
+      // Sends updated data to the backend using the itinerary ID from the URL
       await itineraryAPI.update(id, itineraryData);
       setMessage("Itinerary updated successfully! Redirecting...");
 
+      // Redirects to user dashboard after successful update
       setTimeout(() => {
         navigate("/user-dashboard");
       }, 1500);
@@ -134,6 +152,7 @@ function EditItinerary() {
     }
   };
 
+  // Shows loading state while initial data is being fetched
   if (initialLoading) {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>
@@ -154,7 +173,7 @@ function EditItinerary() {
           borderRadius: "8px",
         }}
       >
-        {/* Itinerary Name */}
+        {/* Itinerary name input - pre-populated with existing value */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -179,7 +198,7 @@ function EditItinerary() {
           />
         </div>
 
-        {/* Description */}
+        {/* Description input - pre-populated with existing value */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -207,7 +226,7 @@ function EditItinerary() {
           />
         </div>
 
-        {/* City Selection */}
+        {/* City dropdown - pre-selected with the itinerary's existing city */}
         <div style={{ marginBottom: "20px" }}>
           <label
             style={{
@@ -238,7 +257,7 @@ function EditItinerary() {
           </select>
         </div>
 
-        {/* Attractions Selection */}
+        {/* Attractions selection - only shown after a city is selected */}
         {formData.cityId && (
           <div style={{ marginBottom: "20px" }}>
             <label
@@ -266,12 +285,14 @@ function EditItinerary() {
                   backgroundColor: "white",
                 }}
               >
+                {/* Each attraction is a clickable card with a checkbox */}
                 {filteredAttractions.map((attraction) => (
                   <div
                     key={attraction.id}
                     style={{
                       padding: "10px",
                       marginBottom: "10px",
+                      // Highlights previously selected attractions in green
                       backgroundColor: formData.attractionIds.includes(
                         attraction.id,
                       )
@@ -287,7 +308,7 @@ function EditItinerary() {
                       <input
                         type="checkbox"
                         checked={formData.attractionIds.includes(attraction.id)}
-                        onChange={() => {}}
+                        onChange={() => {}} // Click handled by parent div
                         style={{ marginRight: "10px" }}
                       />
                       <div>
@@ -305,7 +326,7 @@ function EditItinerary() {
           </div>
         )}
 
-        {/* Message */}
+        {/* Inline success or error message */}
         {message && (
           <div
             style={{
@@ -326,8 +347,9 @@ function EditItinerary() {
           </div>
         )}
 
-        {/* Buttons */}
+        {/* Submit and cancel buttons */}
         <div style={{ display: "flex", gap: "10px" }}>
+          {/* Submit button is disabled while the update request is in progress */}
           <button
             type="submit"
             disabled={loading}
@@ -346,6 +368,7 @@ function EditItinerary() {
             {loading ? "Saving..." : "Save Changes"}
           </button>
 
+          {/* Cancel button navigates back to the user dashboard without saving */}
           <button
             type="button"
             onClick={() => navigate("/user-dashboard")}
