@@ -1,3 +1,6 @@
+// Admin Login page - authenticates admin users and redirects to the admin dashboard
+// Verifies that the logged-in user has ADMIN role before granting access
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
@@ -6,10 +9,12 @@ import ReusableButton from "./ReusableButton";
 function AdminLogin() {
   const navigate = useNavigate();
 
+  // Form field state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Handles form submission and admin authentication
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -22,16 +27,16 @@ function AdminLogin() {
 
       const userData = response.data;
 
-      // Check if user has ADMIN role
+      // Blocks access if the user does not have ADMIN role
       if (userData.role !== "ADMIN") {
         setErrorMessage("Access denied. Admin privileges required.");
         return;
       }
 
-      // Save admin data to localStorage
+      // Saves admin data to localStorage for session management
       localStorage.setItem("admin", JSON.stringify(userData));
 
-      // Redirect to admin dashboard
+      // Redirects to the admin dashboard on successful login
       navigate("/admin-dashboard");
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -58,6 +63,7 @@ function AdminLogin() {
         Admin access only
       </p>
 
+      {/* Username input */}
       <div style={{ marginBottom: "15px" }}>
         <label
           style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}
@@ -79,6 +85,7 @@ function AdminLogin() {
         />
       </div>
 
+      {/* Password input */}
       <div style={{ marginBottom: "15px" }}>
         <label
           style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}
@@ -100,6 +107,7 @@ function AdminLogin() {
         />
       </div>
 
+      {/* Inline error message displayed on failed login */}
       {errorMessage && (
         <div
           style={{
@@ -115,6 +123,7 @@ function AdminLogin() {
         </div>
       )}
 
+      {/* Submit button */}
       <button
         type="submit"
         style={{
@@ -133,6 +142,7 @@ function AdminLogin() {
         Login as Admin
       </button>
 
+      {/* Navigation back to home */}
       <div style={{ textAlign: "center" }}>
         <ReusableButton label="Back to Home Page" path="/" />
       </div>

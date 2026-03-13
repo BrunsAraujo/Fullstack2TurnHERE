@@ -1,5 +1,10 @@
 //added edit button to cities and attractions to pre-populate the form for easy editing, added cancel button to reset the form and exit edit mode, added confirmation prompts for deletions, improved styling of the dashboard with a cleaner layout and better colors, added success/error messages for user feedback on actions performed.
 //Removed in broser alers and added admin login, protection of admin routes, and admin registration with secret key requirement for better security and user management.
+
+// Admin Dashboard - allows admin to manage cities and attractions (add, edit, delete)
+// Protected route: redirects to admin login if no valid admin session is found
+// Uses inline confirmation instead of browser alerts for delete actions
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { cityAPI, attractionAPI } from "../services/api";
@@ -10,6 +15,7 @@ function AdminDashboard() {
   const [cities, setCities] = useState([]);
   const [attractions, setAttractions] = useState([]);
 
+  // State for new city and attraction form inputs
   const [newCity, setNewCity] = useState({ name: "", state: "", country: "" });
   const [newAttraction, setNewAttraction] = useState({
     name: "",
@@ -19,16 +25,20 @@ function AdminDashboard() {
     cityId: "",
   });
 
+  // State for tracking which city or attraction is being edited
   const [editingCity, setEditingCity] = useState(null);
   const [editingAttraction, setEditingAttraction] = useState(null);
 
+  // State for inline success/error feedback messages
   const [cityMessage, setCityMessage] = useState("");
   const [attractionMessage, setAttractionMessage] = useState("");
 
+  // State for tracking which item is pending delete confirmation
   const [confirmDeleteCityId, setConfirmDeleteCityId] = useState(null);
   const [confirmDeleteAttractionId, setConfirmDeleteAttractionId] =
     useState(null);
 
+  // Checks for valid admin session on mount; redirects if not authenticated
   useEffect(() => {
     const adminData = localStorage.getItem("admin");
     if (!adminData) {
@@ -38,6 +48,7 @@ function AdminDashboard() {
 
     const parsedAdmin = JSON.parse(adminData);
 
+    // Ensures the logged-in user has ADMIN role
     if (parsedAdmin.role !== "ADMIN") {
       navigate("/admin-login");
       return;
@@ -47,6 +58,7 @@ function AdminDashboard() {
     fetchData();
   }, [navigate]);
 
+  // Fetches all cities and attractions from the backend
   const fetchData = async () => {
     try {
       const [citiesRes, attractionsRes] = await Promise.all([
@@ -60,12 +72,15 @@ function AdminDashboard() {
     }
   };
 
+  // Clears admin session and redirects to home
   const handleLogout = () => {
     localStorage.removeItem("admin");
     navigate("/");
   };
 
-  // CITY FUNCTIONS
+  // ─── CITY FUNCTIONS ───────────────────────────────────────────────
+
+  // Submits new city to the backend and refreshes the list
   const handleAddCity = async (e) => {
     e.preventDefault();
     setCityMessage("");
@@ -84,11 +99,13 @@ function AdminDashboard() {
     }
   };
 
+  // Populates the city form with existing data for editing
   const handleEditCity = (city) => {
     setEditingCity({ ...city });
     setCityMessage("");
   };
 
+  // Submits updated city data to the backend
   const handleUpdateCity = async (e) => {
     e.preventDefault();
     setCityMessage("");
@@ -107,6 +124,7 @@ function AdminDashboard() {
     }
   };
 
+  // Deletes a city after inline confirmation
   const handleDeleteCity = async (id) => {
     try {
       await cityAPI.delete(id);
@@ -120,12 +138,15 @@ function AdminDashboard() {
     }
   };
 
+  // Exits city edit mode and clears the message
   const handleCancelEditCity = () => {
     setEditingCity(null);
     setCityMessage("");
   };
 
-  // ATTRACTION FUNCTIONS
+  // ─── ATTRACTION FUNCTIONS ─────────────────────────────────────────
+
+  // Submits new attraction to the backend and refreshes the list
   const handleAddAttraction = async (e) => {
     e.preventDefault();
     setAttractionMessage("");
@@ -150,11 +171,13 @@ function AdminDashboard() {
     }
   };
 
+  // Populates the attraction form with existing data for editing
   const handleEditAttraction = (attraction) => {
     setEditingAttraction({ ...attraction, cityId: attraction.city.id });
     setAttractionMessage("");
   };
 
+  // Submits updated attraction data to the backend
   const handleUpdateAttraction = async (e) => {
     e.preventDefault();
     setAttractionMessage("");
@@ -179,6 +202,7 @@ function AdminDashboard() {
     }
   };
 
+  // Deletes an attraction after inline confirmation
   const handleDeleteAttraction = async (id) => {
     try {
       await attractionAPI.delete(id);
@@ -192,11 +216,13 @@ function AdminDashboard() {
     }
   };
 
+  // Exits attraction edit mode and clears the message
   const handleCancelEditAttraction = () => {
     setEditingAttraction(null);
     setAttractionMessage("");
   };
 
+  // Shows loading state while admin session is being verified
   if (!admin) {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
@@ -205,6 +231,7 @@ function AdminDashboard() {
 
   return (
     <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
+      {/* Header with admin username and logout button */}
       <div
         style={{
           display: "flex",
@@ -235,7 +262,7 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* CITIES SECTION */}
+      {/* ── CITIES SECTION ── */}
       <div
         style={{
           marginBottom: "50px",
@@ -244,6 +271,7 @@ function AdminDashboard() {
           borderRadius: "8px",
         }}
       >
+        {/* Form toggles between Add and Edit mode based on editingCity state */}
         <h2 style={{ color: "#007BFF", marginBottom: "20px" }}>
           {editingCity ? "Edit City" : "Add New City"}
         </h2>
@@ -322,6 +350,7 @@ function AdminDashboard() {
             >
               {editingCity ? "Update City" : "Add City"}
             </button>
+            {/* Cancel button only shown when in edit mode */}
             {editingCity && (
               <button
                 type="button"
@@ -342,6 +371,7 @@ function AdminDashboard() {
           </div>
         </form>
 
+        {/* Inline success or error message for city actions */}
         {cityMessage && (
           <div
             style={{
@@ -361,6 +391,8 @@ function AdminDashboard() {
         <h3 style={{ marginTop: "30px", marginBottom: "15px" }}>
           Cities List ({cities.length})
         </h3>
+
+        {/* Scrollable list of all cities with edit and delete buttons */}
         <div style={{ maxHeight: "300px", overflowY: "auto" }}>
           {cities.map((city) => (
             <div
@@ -397,6 +429,7 @@ function AdminDashboard() {
                   >
                     Edit
                   </button>
+                  {/* Clicking Delete shows inline confirmation instead of browser alert */}
                   <button
                     onClick={() => setConfirmDeleteCityId(city.id)}
                     style={{
@@ -413,7 +446,7 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Inline confirmation for city delete */}
+              {/* Inline delete confirmation panel */}
               {confirmDeleteCityId === city.id && (
                 <div
                   style={{
@@ -462,7 +495,7 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* ATTRACTIONS SECTION */}
+      {/* ── ATTRACTIONS SECTION ── */}
       <div
         style={{
           backgroundColor: "#f8f9fa",
@@ -470,6 +503,7 @@ function AdminDashboard() {
           borderRadius: "8px",
         }}
       >
+        {/* Form toggles between Add and Edit mode based on editingAttraction state */}
         <h2 style={{ color: "#007BFF", marginBottom: "20px" }}>
           {editingAttraction ? "Edit Attraction" : "Add New Attraction"}
         </h2>
@@ -502,6 +536,7 @@ function AdminDashboard() {
               }}
             />
 
+            {/* Dropdown values must match the Attraction.Type enum in the backend */}
             <select
               value={
                 editingAttraction ? editingAttraction.type : newAttraction.type
@@ -589,6 +624,7 @@ function AdminDashboard() {
               }}
             />
 
+            {/* City dropdown populated from backend data */}
             <select
               value={
                 editingAttraction
@@ -637,6 +673,7 @@ function AdminDashboard() {
             >
               {editingAttraction ? "Update Attraction" : "Add Attraction"}
             </button>
+            {/* Cancel button only shown when in edit mode */}
             {editingAttraction && (
               <button
                 type="button"
@@ -657,6 +694,7 @@ function AdminDashboard() {
           </div>
         </form>
 
+        {/* Inline success or error message for attraction actions */}
         {attractionMessage && (
           <div
             style={{
@@ -678,6 +716,8 @@ function AdminDashboard() {
         <h3 style={{ marginTop: "30px", marginBottom: "15px" }}>
           Attractions List ({attractions.length})
         </h3>
+
+        {/* Scrollable list of all attractions with edit and delete buttons */}
         <div style={{ maxHeight: "400px", overflowY: "auto" }}>
           {attractions.map((attraction) => (
             <div
@@ -736,6 +776,7 @@ function AdminDashboard() {
                   >
                     Edit
                   </button>
+                  {/* Clicking Delete shows inline confirmation instead of browser alert */}
                   <button
                     onClick={() => setConfirmDeleteAttractionId(attraction.id)}
                     style={{
@@ -753,7 +794,7 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Inline confirmation for attraction delete */}
+              {/* Inline delete confirmation panel */}
               {confirmDeleteAttractionId === attraction.id && (
                 <div
                   style={{

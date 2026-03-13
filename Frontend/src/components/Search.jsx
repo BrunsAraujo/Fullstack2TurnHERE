@@ -2,6 +2,10 @@
 //shows itinerary inline using CotyItinerary3, handles selectedCity and query with state management.
 //update for backend integration to add: Fetches cities from backend; 2 - search city by name or State; 3 - show loading state while fetching;
 // 4 - error handling if backend fetch fails; 5 - display number of search results; 6 - improved styling for better styled buttons (UX).
+
+// Search component - allows users to search for a city and view its attractions
+// Fetches all cities from the backend and filters them based on the search query
+
 import { useState, useEffect } from "react";
 import { cityAPI } from "../services/api";
 import CityItinerary from "./CityItinerary.jsx";
@@ -14,8 +18,8 @@ function Search({ onSelectCity }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetches all cities from the backend when the component mounts
   useEffect(() => {
-    // Fetch cities from backend when component mounts
     const fetchCities = async () => {
       try {
         const response = await cityAPI.getAll();
@@ -31,13 +35,14 @@ function Search({ onSelectCity }) {
     fetchCities();
   }, []);
 
-  // Filter cities based on search query
+  // Filters cities by name or state based on the current search query
   const filteredCities = cities.filter(
     (city) =>
       city.name.toLowerCase().includes(query.toLowerCase()) ||
       city.state.toLowerCase().includes(query.toLowerCase()),
   );
 
+  // Sets the selected city and calls the optional parent callback
   const handleCityClick = (city) => {
     setSelectedCity(city);
     if (onSelectCity) {
@@ -45,11 +50,13 @@ function Search({ onSelectCity }) {
     }
   };
 
+  // Clears the selected city and resets the search input
   const handleBackToSearch = () => {
     setSelectedCity(null);
     setQuery("");
   };
 
+  // Shows loading state while cities are being fetched
   if (loading) {
     return (
       <div
@@ -61,6 +68,7 @@ function Search({ onSelectCity }) {
     );
   }
 
+  // Shows error message if the backend fetch fails
   if (error) {
     return (
       <div
@@ -79,9 +87,12 @@ function Search({ onSelectCity }) {
       className="search-container"
       style={{ padding: "20px", textAlign: "center" }}
     >
+      {/* Toggles between search view and city detail view */}
       {!selectedCity ? (
         <>
           <h2>Search for a City</h2>
+
+          {/* Search input filters cities as the user types */}
           <input
             type="text"
             placeholder="Type a city name or state..."
@@ -97,12 +108,14 @@ function Search({ onSelectCity }) {
             }}
           />
 
+          {/* Shows a no results message when the search has no matches */}
           {query && filteredCities.length === 0 && (
             <p style={{ color: "red", fontWeight: "bold" }}>
               No cities found matching "{query}"
             </p>
           )}
 
+          {/* Shows the number of matching results when found */}
           {query && filteredCities.length > 0 && (
             <p style={{ color: "#666", marginBottom: "20px" }}>
               Found {filteredCities.length}{" "}
@@ -110,6 +123,7 @@ function Search({ onSelectCity }) {
             </p>
           )}
 
+          {/* Shows filtered results when searching, or all cities when input is empty */}
           <ul style={{ listStyle: "none", padding: 0 }}>
             {(query ? filteredCities : cities).map((city) => (
               <li key={city.id} style={{ margin: "10px 0" }}>
@@ -134,7 +148,10 @@ function Search({ onSelectCity }) {
         </>
       ) : (
         <>
+          {/* Shows the CityItinerary component for the selected city */}
           <CityItinerary city={selectedCity} />
+
+          {/* Back button returns the user to the search results */}
           <button
             onClick={handleBackToSearch}
             style={{
@@ -153,6 +170,8 @@ function Search({ onSelectCity }) {
         </>
       )}
       <br />
+
+      {/* Navigation back to home */}
       <ReusableButton label="Back to Home Page" />
     </div>
   );

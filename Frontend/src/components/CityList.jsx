@@ -3,21 +3,26 @@
 //Backend integration - makes the styling of the city list the same as the search page, and randomizer page, with a loading state while fetching cities
 // from the backend, and error handling if the fetch fails. The city list now displays a message if no cities are found in the database,
 //  and includes a button to go back to the home page. The city list also displays the number of cities available in the database.
+
+// CityList component - fetches and displays all available cities from the backend
+// Each city is a clickable button that navigates to the city's attractions page
+
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { cityAPI } from "../services/api";
 import ReusableButton from "./ReusableButton";
 
-function CityList({ onSelectCity }) {
+function CityList() {
+  const navigate = useNavigate();
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetches all cities from the backend when the component mounts
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        console.log("Fetching cities from backend...");
         const response = await cityAPI.getAll();
-        console.log("Cities received:", response.data);
         setCities(response.data);
         setLoading(false);
       } catch (err) {
@@ -30,6 +35,7 @@ function CityList({ onSelectCity }) {
     fetchCities();
   }, []);
 
+  // Shows loading state while cities are being fetched
   if (loading) {
     return (
       <div
@@ -41,6 +47,7 @@ function CityList({ onSelectCity }) {
     );
   }
 
+  // Shows error message if the backend fetch fails
   if (error) {
     return (
       <div
@@ -54,6 +61,7 @@ function CityList({ onSelectCity }) {
     );
   }
 
+  // Shows empty state if no cities exist in the database
   if (cities.length === 0) {
     return (
       <div
@@ -70,16 +78,19 @@ function CityList({ onSelectCity }) {
   return (
     <div className="city-list" style={{ padding: "20px", textAlign: "center" }}>
       <h2>Select a City</h2>
+
+      {/* Shows total number of available cities */}
       <p style={{ color: "#666", marginBottom: "20px" }}>
         Choose from {cities.length} available{" "}
         {cities.length === 1 ? "city" : "cities"}
       </p>
 
+      {/* Renders each city as a styled button that navigates to its attractions */}
       <ul style={{ listStyle: "none", padding: 0 }}>
         {cities.map((city) => (
           <li key={city.id} style={{ margin: "10px 0" }}>
             <button
-              onClick={() => onSelectCity(city)}
+              onClick={() => navigate(`/cities/${city.name}`)}
               style={{
                 fontSize: "1rem",
                 padding: "12px 24px",
@@ -100,6 +111,7 @@ function CityList({ onSelectCity }) {
         ))}
       </ul>
 
+      {/* Navigation back to home */}
       <div style={{ marginTop: "30px" }}>
         <ReusableButton label="Back to Home Page" />
       </div>

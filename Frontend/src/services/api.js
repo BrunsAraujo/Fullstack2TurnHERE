@@ -1,9 +1,14 @@
 //add admin endpoints & import axios from "axios";
+
+// api.js - Centralized API service file
+// Contains all Axios calls to the Spring Boot backend organized by resource type
+
 import axios from "axios";
 
+// Base URL for all API requests - points to the Spring Boot backend
 const API_BASE_URL = "http://localhost:8080/api";
 
-// City API (Admin)
+// City API - Admin only endpoints for managing cities
 const cityAPI = {
   getAll: () => axios.get(`${API_BASE_URL}/admin/cities`),
   getById: (id) => axios.get(`${API_BASE_URL}/admin/cities/${id}`),
@@ -12,7 +17,7 @@ const cityAPI = {
   delete: (id) => axios.delete(`${API_BASE_URL}/admin/cities/${id}`),
 };
 
-// Attraction API (Admin)
+// Attraction API - Admin only endpoints for managing attractions
 const attractionAPI = {
   getAll: () => axios.get(`${API_BASE_URL}/admin/attractions`),
   getById: (id) => axios.get(`${API_BASE_URL}/admin/attractions/${id}`),
@@ -23,7 +28,7 @@ const attractionAPI = {
   delete: (id) => axios.delete(`${API_BASE_URL}/admin/attractions/${id}`),
 };
 
-// Auth API (User)
+// Auth API - Handles user and admin registration and login
 const authAPI = {
   register: (userData) => axios.post(`${API_BASE_URL}/auth/register`, userData),
   registerAdmin: (adminData) =>
@@ -32,7 +37,7 @@ const authAPI = {
   getUserById: (id) => axios.get(`${API_BASE_URL}/auth/user/${id}`),
 };
 
-// Itinerary API (User)
+// Itinerary API - User endpoints for managing saved itineraries
 const itineraryAPI = {
   getAll: () => axios.get(`${API_BASE_URL}/itineraries`),
   getById: (id) => axios.get(`${API_BASE_URL}/itineraries/${id}`),
@@ -44,7 +49,7 @@ const itineraryAPI = {
   delete: (id) => axios.delete(`${API_BASE_URL}/itineraries/${id}`),
 };
 
-// Review API (User)
+// Review API - User endpoints for managing reviews on saved itineraries
 const reviewAPI = {
   getAll: () => axios.get(`${API_BASE_URL}/reviews`),
   getById: (id) => axios.get(`${API_BASE_URL}/reviews/${id}`),
@@ -56,4 +61,5 @@ const reviewAPI = {
   delete: (id) => axios.delete(`${API_BASE_URL}/reviews/${id}`),
 };
 
+// Exports all API objects for use throughout the frontend components
 export { cityAPI, attractionAPI, authAPI, itineraryAPI, reviewAPI };

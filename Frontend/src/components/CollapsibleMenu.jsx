@@ -5,16 +5,22 @@
 //Updated the collapsible menu to check if the user is logged in and show different links accordingly, also added an admin dashboard link for easy access. Styled the menu for better user experience and visual appeal. Added a welcome message on the home page with a brief description of the app's features and benefits to engage users right away.
 //also admin login and registration pages have been added to the menu for easy access, and the home page now includes a welcome message with a brief description of the app's features and benefits to engage users right away. The collapsible menu has been styled with a light blue background, padding, and border to enhance its visual appeal and improve user experience.
 
+// CollapsibleMenu component - toggleable navigation menu shown across all pages
+// Dynamically shows different links based on user and admin session state
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function CollapsibleMenu() {
+  // Tracks whether the menu is open or closed
   const [isOpen, setIsOpen] = useState(false);
 
+  // Toggles the menu open and closed
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  // Checks localStorage to determine if a user or admin is currently logged in
   const user = localStorage.getItem("user");
   const admin = localStorage.getItem("admin");
   const isLoggedIn = !!user;
@@ -22,6 +28,7 @@ function CollapsibleMenu() {
 
   return (
     <div>
+      {/* Toggle button - label changes based on menu state */}
       <button
         onClick={toggleMenu}
         style={{
@@ -38,6 +45,7 @@ function CollapsibleMenu() {
         {isOpen ? "CLOSE MENU" : "OPEN MENU"}
       </button>
 
+      {/* Menu content - only rendered when isOpen is true */}
       {isOpen && (
         <nav
           style={{
@@ -47,6 +55,7 @@ function CollapsibleMenu() {
           }}
         >
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {/* Public navigation links available to all users */}
             <li style={{ marginBottom: "10px" }}>
               <Link
                 to="/"
@@ -124,6 +133,8 @@ function CollapsibleMenu() {
 
             <hr style={{ margin: "15px 0", border: "1px solid #ddd" }} />
 
+            {/* User section - shows dashboard and create itinerary if logged in,
+                otherwise shows register and login links */}
             {isLoggedIn ? (
               <>
                 <li style={{ marginBottom: "10px" }}>
@@ -190,6 +201,8 @@ function CollapsibleMenu() {
 
             <hr style={{ margin: "15px 0", border: "1px solid #ddd" }} />
 
+            {/* Admin section - shows admin dashboard if logged in as admin,
+                otherwise shows admin login and registration links */}
             {isAdmin ? (
               <li style={{ marginBottom: "10px" }}>
                 <Link
