@@ -3,8 +3,9 @@ Defines font/light scheme
 Hover color change to button
 Bounce movement to car.png
 shake to "HERE"
-
+Responsive Media Breakpoints at 768px (tablet) and 480px (mobile)
 */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -61,6 +62,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Breakpoint 1 - Color Scheme Preference */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -74,6 +76,7 @@ button:focus-visible {
   }
 }
 
+/* Bounce animation for car image in Header.jsx */
 @keyframes bounce {
   0%,
   100% {
@@ -92,6 +95,7 @@ button:focus-visible {
   animation: bounce 1s infinite;
 }
 
+/* Shake animation for HERE! text in Header.jsx */
 @keyframes shake {
   0% {
     transform: translateX(0);
@@ -115,6 +119,7 @@ button:focus-visible {
   animation: shake 0.5s infinite;
 }
 
+/* Global body styles */
 body {
   margin: 0;
   display: flex;
@@ -124,11 +129,12 @@ body {
   background-color: #f0f8ff;
 }
 
+/* City list styles used in CityList.jsx */
 .city-list {
   display: flex;
   flex-direction: column;
-  align-items: center; /* horizontal centering */
-  justify-content: center; /* vertical centering if parent allows */
+  align-items: center;
+  justify-content: center;
   text-align: center;
   padding: 40px;
 }
@@ -154,7 +160,8 @@ body {
 .city-list li:hover {
   color: #007bff;
 }
-/*  Responsive Media Breakpoints */
+
+/* Breakpoint 2 - Tablet 768px */
 @media (max-width: 768px) {
   h1 {
     font-size: 2.4em;
@@ -182,36 +189,37 @@ body {
   .bounce-hover:hover {
     animation-duration: 0.8s;
   }
-  /* Mobile breakpoint - 480px */
-  @media (max-width: 480px) {
-    h1 {
-      font-size: 1.8em;
-    }
+}
 
-    .city-list {
-      padding: 10px;
-    }
+/* Breakpoint 3 - Mobile 480px */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8em;
+  }
 
-    .city-list h2 {
-      font-size: 1.2rem;
-    }
+  .city-list {
+    padding: 10px;
+  }
 
-    .city-list li {
-      font-size: 0.9rem;
-    }
+  .city-list h2 {
+    font-size: 1.2rem;
+  }
 
-    button {
-      font-size: 0.8em;
-      padding: 0.4em 0.8em;
-      width: 100%;
-    }
+  .city-list li {
+    font-size: 0.9rem;
+  }
 
-    .search-container {
-      padding: 10px;
-    }
+  button {
+    font-size: 0.8em;
+    padding: 0.4em 0.8em;
+    width: 100%;
+  }
 
-    .trip-saver {
-      padding: 10px;
-    }
+  .search-container {
+    padding: 10px;
+  }
+
+  .trip-saver {
+    padding: 10px;
   }
 }
