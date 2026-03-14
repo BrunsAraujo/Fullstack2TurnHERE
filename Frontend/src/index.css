@@ -75,7 +75,8 @@ button:focus-visible {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -92,11 +93,21 @@ button:focus-visible {
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .shake-hover:hover {
@@ -141,7 +152,7 @@ body {
 }
 
 .city-list li:hover {
-  color: #007BFF;
+  color: #007bff;
 }
 /*  Responsive Media Breakpoints */
 @media (max-width: 768px) {
@@ -171,5 +182,36 @@ body {
   .bounce-hover:hover {
     animation-duration: 0.8s;
   }
-}
+  /* Mobile breakpoint - 480px */
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.8em;
+    }
 
+    .city-list {
+      padding: 10px;
+    }
+
+    .city-list h2 {
+      font-size: 1.2rem;
+    }
+
+    .city-list li {
+      font-size: 0.9rem;
+    }
+
+    button {
+      font-size: 0.8em;
+      padding: 0.4em 0.8em;
+      width: 100%;
+    }
+
+    .search-container {
+      padding: 10px;
+    }
+
+    .trip-saver {
+      padding: 10px;
+    }
+  }
+}
