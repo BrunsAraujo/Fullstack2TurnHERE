@@ -8,6 +8,7 @@
 # 📋 Table of Contents
 
 - [About the Project](#about-the-project)
+- [Wireframes](#wireframes)
 - [Technologies Used](#technologies-used)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
@@ -29,6 +30,15 @@
 The application helps users quickly plan **day trips** by exploring cities and selecting attractions to create personalized travel itineraries.
 
 Users can browse cities, search locations, generate random destinations, and save trip plans. Admin users can manage all cities, attractions, and itineraries through a protected dashboard.
+
+---
+
+# 🗂️ Wireframes
+
+You can view the full application wireframes here:
+
+👉 **Wireframes (Google Doc):**  
+https://docs.google.com/document/d/1pyAW_etMl4eJTH41GKWMFecRPQgy36Tt/edit?usp=sharing&ouid=100617101241565328502&rtpof=true&sd=true
 
 ---
 
