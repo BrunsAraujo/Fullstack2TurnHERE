@@ -141,3 +141,70 @@ Before running the application, install the following tools:
 ```bash
 git clone https://github.com/BrunsAraujo/Fullstack2TurnHERE.git
 cd Fullstack2TurnHERE
+
+## Step 2  — Configure the Database
+- Open MySQL Workbench
+- Create a new schema:
+CREATE DATABASE turnhere;
+
+## Step 3 - Install BAckend Dependencies
+cd backend
+mvn clean install
+
+## Step 4 - Install Frontend Dependencies
+cd frontend
+npm install
+
+## Running the Application
+1 - Start the Backend (Spring Boot)
+-mvn spring-boot:run
+Backend runs at:
+-http://localhost:8080
+
+2 - Start the Frontend (React)
+-npm run dev
+Frontend runs at:
+http://localhost:5173
+
+🗄️ Database Schema
+You can view the full ERD(Entity Relationsip Diagram) here:
+👉 **ERD:**  
+https://www.figma.com/design/d7kciJWQKx44HTrqIj15po/ERD---TURN-HERE?node-id=0-1&p=f&t=4TAuCsCv2kjjE47l-0
+---
+Troubleshooting:
+🛠️ Troubleshooting
+❗ MySQL Connection Errors
+- Ensure MySQL is running
+- Verify username/password in application.properties
+- Check that the schema turnhere exists
+❗ Port Already in Use
+- Backend default port: 8080
+- Frontend default port: 5173
+Kill the process or change the port.
+❗ CORS Errors
+If frontend cannot reach backend:
+- Ensure backend is running
+- Ensure CORS is enabled in your Spring Boot config
+❗ Login Not Working
+- Make sure passwords are hashed using BCrypt
+- Ensure the user exists in the database
+❗ React App Not Loading
+rm -rf node_modules
+npm install
+
+👤 Author
+Bruno Araujo
+Full‑Stack Developer
+GitHub: https://github.com/BrunsAraujo (github.com in Bing)
+
+
+
+
+
+
+
+
+
+
+
+
