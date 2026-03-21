@@ -397,7 +397,7 @@ npm install
 ```
 ---
 # 👤 Ulsolved Problems
-### 4. Review and Rating System is Incomplete
+### 1. Review and Rating System is Incomplete
 The backend for the review system is fully built including the `Review`
 entity, `ReviewController` with 7 endpoints, `ReviewRepository`,
 `ReviewRequest` DTO, and the `reviewAPI` object in `api.js`.
@@ -410,7 +410,7 @@ beneath each saved itinerary.
 
 ---
 
-### 5. Admin Itinerary Controller Has No Frontend Connection
+### 2. Admin Itinerary Controller Has No Frontend Connection
 `AdminItineraryController.java` has 6 fully working endpoints for
 admin itinerary management at `/api/admin/itineraries`.
 However no page in the Admin Dashboard connects to these endpoints.
@@ -422,7 +422,7 @@ for users to browse.
 
 ---
 
-### 6. TripSaver Has No Backend Integration
+### 3. TripSaver Has No Backend Integration
 `TripSaver.jsx` is a component accessible at `/trip-saver` but has
 no connection to the backend. Trip destinations and feedback are
 stored only in local component state and are lost when the page
@@ -434,7 +434,7 @@ to the menu, and persist trip and feedback data to the database.
 
 ---
 
-### 7. No Response DTOs
+### 4. No Response DTOs
 All controllers return full entity objects directly in the API response.
 This means internal fields and relationships are exposed unnecessarily
 to the frontend.
@@ -444,7 +444,7 @@ exactly what data is sent back in API responses.
 
 ---
 
-### 8. No Unit Tests
+### 5. No Unit Tests
 The project has no unit tests or integration tests for either
 the frontend or backend. All testing was done manually through
 the browser and Postman.
