@@ -19,7 +19,7 @@
 - [Database Schema](#database-schema)
 - [User Roles](#user-roles)
 - [Troubleshooting](#troubleshooting)
-- [Unsolved Problems](#unsolved--problems)  Description of unsolved problems and/or future features
+- [Unsolved Problems](#unsolved--problems)
 - [Future Features](#future--features)
 - [Author](#author)
 
