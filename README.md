@@ -19,6 +19,8 @@
 - [Database Schema](#database-schema)
 - [User Roles](#user-roles)
 - [Troubleshooting](#troubleshooting)
+- [Unsolved Problems](#unsolved--problems)  Description of unsolved problems and/or future features
+- [Future Features](#future--features)
 - [Author](#author)
 
 ---
@@ -393,6 +395,78 @@ If frontend cannot reach backend:
 rm -rf node_modules
 npm install
 ```
+---
+# 👤 Ulsolved Problems
+### 4. Review and Rating System is Incomplete
+The backend for the review system is fully built including the `Review`
+entity, `ReviewController` with 7 endpoints, `ReviewRepository`,
+`ReviewRequest` DTO, and the `reviewAPI` object in `api.js`.
+However no frontend component was built to create or display reviews.
+The `reviews` table exists in MySQL but is always empty.
+
+**Fix:** Build a `ReviewForm.jsx` component with a 1-5 star rating
+input and comment field. Display reviews on the `UserDashboard`
+beneath each saved itinerary.
+
+---
+
+### 5. Admin Itinerary Controller Has No Frontend Connection
+`AdminItineraryController.java` has 6 fully working endpoints for
+admin itinerary management at `/api/admin/itineraries`.
+However no page in the Admin Dashboard connects to these endpoints.
+The `itineraries` table exists in MySQL but is always empty.
+
+**Fix:** Add an Itinerary Management section to `AdminDashboard.jsx`
+that allows admins to create and manage pre-built itinerary templates
+for users to browse.
+
+---
+
+### 6. TripSaver Has No Backend Integration
+`TripSaver.jsx` is a component accessible at `/trip-saver` but has
+no connection to the backend. Trip destinations and feedback are
+stored only in local component state and are lost when the page
+is refreshed. There is also no navigation link to this page in
+`CollapsibleMenu.jsx`.
+
+**Fix:** Connect TripSaver to the backend API, add navigation link
+to the menu, and persist trip and feedback data to the database.
+
+---
+
+### 7. No Response DTOs
+All controllers return full entity objects directly in the API response.
+This means internal fields and relationships are exposed unnecessarily
+to the frontend.
+
+**Fix:** Create Response DTO classes for each entity to control
+exactly what data is sent back in API responses.
+
+---
+
+### 8. No Unit Tests
+The project has no unit tests or integration tests for either
+the frontend or backend. All testing was done manually through
+the browser and Postman.
+
+**Fix:** Add JUnit tests for all controllers and repositories
+on the backend. Add React Testing Library tests for key
+components on the frontend.
+
+---
+# Future Features 
+### 1. External API Integration - Google Places API
+Integrate the Google Places API to automatically populate cities
+with real attraction data when an admin adds a new city.
+Instead of manually entering each attraction, the app would
+fetch real restaurants, museums, parks, and wineries from Google
+and pre-populate the attraction list for admin review and approval.
+
+**Technical approach:**
+- Create a `PlacesApiService.java` on the backend
+- Add `latitude` and `longitude` fields to the `Attraction` entity
+- Store the API key securely as an environment variable
+- Add a Search button to the Admin Dashboard city form
 
 ---
 
