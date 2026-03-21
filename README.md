@@ -25,13 +25,11 @@
 
 # 📖 About the Project
 
-**Turn-HERE!** is a LaunchCode Capstone 2 full-stack web application built using **React** on the frontend and **Spring Boot** on the backend.
+**Turn-HERE!** is a LaunchCode Capstone 2 full-stack web application built using **React** on the frontend, **Spring Boot** on the backend, and **MySQL** as the relational database.
 
 The application helps users quickly plan **day trips** by exploring cities and selecting attractions to create personalized travel itineraries.
 
-Users can browse cities, search locations, generate random destinations, and save trip plans. Admin users can manage all cities, attractions, and itineraries through a protected dashboard.
-
----
+Users can browse cities, search locations, generate random destinations, and save trip plans. Admin users can manage all cities and attractions through a protected dashboard.
 
 # 🗂️ Wireframes
 
@@ -100,8 +98,8 @@ https://docs.google.com/document/d/1pyAW_etMl4eJTH41GKWMFecRPQgy36Tt/edit?usp=sh
 - Secure admin registration with secret key
 - Protected Admin Dashboard
 - Create, edit, and delete cities
-- Manage attractions
-- Full content management system
+- Create, Edit, and delete attractions
+
 
 ---
 
