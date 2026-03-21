@@ -33,7 +33,7 @@ Users can browse cities, search locations, generate random destinations, and sav
 
 # 🖼️ Application Preview
 
-![Turn-HERE Homepage](assets/images/turnhere-homepage.png)
+<img width="843" height="987" alt="image" src="https://github.com/user-attachments/assets/368ada26-303e-47b3-8a7d-1f9d2b2884b9" />
 
 ---
 
