@@ -396,7 +396,7 @@ rm -rf node_modules
 npm install
 ```
 ---
-# 👤 Ulsolved Problems
+# 👤 Unsolved Problems
 ### 1. Review and Rating System is Incomplete
 The backend for the review system is fully built including the `Review`
 entity, `ReviewController` with 7 endpoints, `ReviewRepository`,
