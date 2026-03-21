@@ -31,6 +31,12 @@ The application helps users quickly plan **day trips** by exploring cities and s
 
 Users can browse cities, search locations, generate random destinations, and save trip plans. Admin users can manage all cities and attractions through a protected dashboard.
 
+# 🖼️ Application Preview
+
+![Turn-HERE Homepage](assets/images/turnhere-homepage.png)
+
+---
+
 # 🗂️ Wireframes
 
 You can view the full application wireframes here:
